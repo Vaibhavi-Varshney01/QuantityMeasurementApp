@@ -1,15 +1,19 @@
 using System;
 namespace feet_measurement_equality{
     public class Feet{
-        public double Value { get; }
+        //taking input of the value
+        public double Value { get; } // encapsulation implemented
         public Feet(double value){
             if (value < 0)
             {
+                //custom exception 
                 throw new InvalidFeetException("Feet value cannot be negative");
             }
 
-            Value = value;
+            Value = value; // constructor created
         }
+
+        //equals method for comparision of the values
         public override bool Equals(object? obj)
         {
             if (obj is not Feet other)
