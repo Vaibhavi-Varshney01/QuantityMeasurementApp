@@ -1,0 +1,50 @@
+ 
+# Build Results
+
+bin/
+obj/
+ 
+# Visual Studio
+ 
+.vs/
+*.user
+*.suo
+*.userprefs
+*.csproj.user
+
+ 
+# VS Code
+ 
+.vscode/
+
+ 
+# Rider
+ 
+.idea/
+ 
+# NuGet
+ 
+packages/
+*.nupkg
+*.snupkg
+
+ 
+# Logs
+ 
+*.log
+
+ 
+# OS Generated Files
+ 
+.DS_Store
+Thumbs.db
+ 
+# Test Results
+ 
+TestResults/
+ 
+# Coverage Reports
+ 
+coverage/
+*.coverage
+*.coveragexml
