@@ -1,0 +1,15 @@
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\feet-and-inch-equality\bin\Debug\net8.0\feet-and-inch-equality.exe
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\feet-and-inch-equality\bin\Debug\net8.0\feet-and-inch-equality.deps.json
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\feet-and-inch-equality\bin\Debug\net8.0\feet-and-inch-equality.runtimeconfig.json
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\feet-and-inch-equality\bin\Debug\net8.0\feet-and-inch-equality.dll
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\feet-and-inch-equality\bin\Debug\net8.0\feet-and-inch-equality.pdb
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\feet-and-inch-equality\obj\Debug\net8.0\feet-and-inch-equality.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\feet-and-inch-equality\obj\Debug\net8.0\feet-and-inch-equality.AssemblyInfoInputs.cache
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\feet-and-inch-equality\obj\Debug\net8.0\feet-and-inch-equality.AssemblyInfo.cs
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\feet-and-inch-equality\obj\Debug\net8.0\feet-and-inch-equality.csproj.CoreCompileInputs.cache
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\feet-and-inch-equality\obj\Debug\net8.0\feet-and-inch-equality.sourcelink.json
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\feet-and-inch-equality\obj\Debug\net8.0\feet-and-inch-equality.dll
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\feet-and-inch-equality\obj\Debug\net8.0\refint\feet-and-inch-equality.dll
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\feet-and-inch-equality\obj\Debug\net8.0\feet-and-inch-equality.pdb
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\feet-and-inch-equality\obj\Debug\net8.0\feet-and-inch-equality.genruntimeconfig.cache
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\feet-and-inch-equality\obj\Debug\net8.0\ref\feet-and-inch-equality.dll
