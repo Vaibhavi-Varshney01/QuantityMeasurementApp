@@ -1,27 +1,18 @@
-# Build results
+# Build folders
 bin/
 obj/
-out/
 
-# User-specific files
+# User specific files
 *.user
+*.rsuser
 *.suo
-*.userosscache
-*.sln.docstates
 
-# VS Code settings
-.vscode/
+# Visual Studio files
+.vs/
 
-# Rider settings
+# Rider / VSCode
 .idea/
-
-# NuGet packages
-*.nupkg
-packages/
-*.snupkg
-
-# Dotnet publish folder
-publish/
+.vscode/
 
 # Logs
 *.log
@@ -29,22 +20,21 @@ publish/
 # OS generated files
 .DS_Store
 Thumbs.db
-
-# OneDrive files (since you are using OneDrive)
-~$*
-
-# Backup files
-*.bak
-*.tmp
-*.swp
-
+ 
 # Test results
 TestResults/
-*.trx
+ 
+# NuGet packages
+*.nupkg
+packages/
+
+# Coverage files
+coverage/
 *.coverage
 *.coveragexml
-*.testsettings
 
-# Resharper
-_ReSharper*/
-*.DotSettings.user
+# Dotnet generated
+*.runtimeconfig.dev.json
+project.lock.json
+project.fragment.lock.json
+artifacts/
