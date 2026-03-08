@@ -1,50 +1,35 @@
- 
 # Build Results
-
 bin/
 obj/
- 
-# Visual Studio
- 
+
+# Visual Studio / Rider / VS Code files
 .vs/
 *.user
 *.suo
 *.userprefs
-*.csproj.user
-
- 
-# VS Code
- 
+*.sln.docstates
 .vscode/
-
- 
-# Rider
- 
 .idea/
- 
-# NuGet
- 
+
+# NuGet packages
 packages/
 *.nupkg
 *.snupkg
 
- 
-# Logs
- 
+# Dotnet temporary files
 *.log
+project.lock.json
+project.fragment.lock.json
+artifacts/
 
- 
-# OS Generated Files
- 
+# OS files
 .DS_Store
 Thumbs.db
- 
-# Test Results
- 
+
+# Test results
 TestResults/
- 
+
 # Coverage Reports
- 
 coverage/
 *.coverage
 *.coveragexml
