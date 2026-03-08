@@ -1,24 +1,24 @@
 namespace QuantityMeasurementApp.Model
 {
-    public class Feet
+    public class Inches
     {
         public double Value { get; }
 
-        public Feet(double value)
+        public Inches(double value)
         {
             Value = value;
         }
 
         // Null-safe Equals method
-        public bool Equals(Feet other)
+        public bool Equals(Inches other)
         {
-            if (other == null) return false; // <-- null check added
+            if (other == null) return false; //  null check 
             return Value == other.Value;
         }
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as Feet); // call the null-safe method
+            return Equals(obj as Inches); // call the null-safe method
         }
 
         public override int GetHashCode()

@@ -6,62 +6,78 @@ namespace QuantityMeasurementApp
 {
     class Program
     {
-        static void Main()
+        static void Main(string[] args)
         {
             QuantityMeasurementService service = new QuantityMeasurementService();
             bool exit = false;
 
             while (!exit)
             {
-                Console.WriteLine("\n--- Quantity Measurement App ---");
-                Console.WriteLine("1. Check Feet Equality");
-                Console.WriteLine("2. Exit");
-
+                Console.WriteLine("\n=== Quantity Measurement App ===");
+                Console.WriteLine("1. Compare Feet");
+                Console.WriteLine("2. Compare Inches");
+                Console.WriteLine("3. Exit");
                 Console.Write("Enter your choice: ");
-                string input = Console.ReadLine();
-
-                if (!int.TryParse(input, out int choice))
-                {
-                    Console.WriteLine("Invalid input! Enter a number.");
-                    continue;
-                }
+                string choice = Console.ReadLine();
 
                 switch (choice)
                 {
-                    case 1:
-                        // Get first value
-                        Console.Write("Enter first value in feet: ");
-                        if (!double.TryParse(Console.ReadLine(), out double firstVal))
-                        {
-                            Console.WriteLine("Invalid number! Try again.");
-                            break;
-                        }
-
-                        // Get second value
-                        Console.Write("Enter second value in feet: ");
-                        if (!double.TryParse(Console.ReadLine(), out double secondVal))
-                        {
-                            Console.WriteLine("Invalid number! Try again.");
-                            break;
-                        }
-
-                        // Compare using service
-                        Feet first = new Feet(firstVal);
-                        Feet second = new Feet(secondVal);
-
-                        bool result = service.AreFeetEqual(first, second);
-                        Console.WriteLine(result ? "Equal (true)" : "Not Equal (false)");
+                    case "1":
+                        CompareFeet(service);
                         break;
-
-                    case 2:
+                    case "2":
+                        CompareInches(service);
+                        break;
+                    case "3":
                         exit = true;
-                        Console.WriteLine("Exiting app... Bye!");
+                        Console.WriteLine("Exiting app...");
                         break;
-
                     default:
-                        Console.WriteLine("Invalid choice! Enter 1 or 2.");
+                        Console.WriteLine("Invalid choice! Try again.");
                         break;
                 }
+            }
+        }
+
+        // Feet comparison
+        private static void CompareFeet(QuantityMeasurementService service)
+        {
+            Console.Write("Enter first value in feet: ");
+            double f1Val = GetDoubleInput();
+            Console.Write("Enter second value in feet: ");
+            double f2Val = GetDoubleInput();
+
+            Feet f1 = new Feet(f1Val);
+            Feet f2 = new Feet(f2Val);
+
+            bool result = service.AreFeetEqual(f1, f2);
+            Console.WriteLine($"Feet Equal? {result}");
+        }
+
+        // Inches comparison
+        private static void CompareInches(QuantityMeasurementService service)
+        {
+            Console.Write("Enter first value in inches: ");
+            double i1Val = GetDoubleInput();
+            Console.Write("Enter second value in inches: ");
+            double i2Val = GetDoubleInput();
+
+            Inches i1 = new Inches(i1Val);
+            Inches i2 = new Inches(i2Val);
+
+            bool result = service.AreInchesEqual(i1, i2);
+            Console.WriteLine($"Inches Equal? {result}");
+        }
+
+        // Input helper
+        private static double GetDoubleInput()
+        {
+            while (true)
+            {
+                string input = Console.ReadLine();
+                if (double.TryParse(input, out double value))
+                    return value;
+                Console.Write("Invalid input! Enter a numeric value: ");
             }
         }
     }
