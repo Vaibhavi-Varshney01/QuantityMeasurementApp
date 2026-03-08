@@ -1,181 +1,148 @@
 ﻿using System;
+using QuantityMeasurementApp.Model;
+using QuantityMeasurementApp.Service;
 
-namespace yard_equality
+namespace QuantityMeasurementApp
 {
     class Program
     {
-        static LengthUnit GetUnit(string input)
+        static void Main(string[] args)
         {
-            if (string.IsNullOrWhiteSpace(input))
-                throw new InvalidUnitException("Unit cannot be empty");
+            QuantityMeasurementService service = new QuantityMeasurementService();
+            bool exit = false;
 
-            input = input.ToUpper();
-
-            switch (input)
+            while (!exit)
             {
-                case "INCHES":
-                    return LengthUnit.INCHES;
-
-                case "FEET":
-                    return LengthUnit.FEET;
-
-                case "YARDS":
-                    return LengthUnit.YARDS;
-
-                case "CENTIMETERS":
-                    return LengthUnit.CENTIMETERS;
-
-                default:
-                    throw new InvalidUnitException("Invalid Unit Entered");
-            }
-        }
-
-        static void DisplayMenu()
-        {
-            Console.WriteLine("=================================");
-            Console.WriteLine("  Quantity Measurement System");
-            Console.WriteLine("=================================");
-            Console.WriteLine("1. UC1 - Basic Length Comparison");
-            Console.WriteLine("2. UC2 - Weight/Mass Comparison (Coming Soon)");
-            Console.WriteLine("3. UC3 - Temperature Comparison (Coming Soon)");
-            Console.WriteLine("4. UC4 - Advanced Yard Equality Testing");
-            Console.WriteLine("5. Exit");
-            Console.WriteLine("=================================");
-            Console.Write("Enter your choice (1-5): ");
-        }
-
-        static void RunBasicLengthComparison()
-        {
-            Console.WriteLine("\n=== UC1 - Basic Length Comparison ===");
-            try
-            {
-                Console.Write("Enter first value: ");
-                string? input1 = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(input1))
-                    throw new Exception("Value cannot be empty");
-                double value1 = Convert.ToDouble(input1);
-
-                Console.Write("Enter first unit (INCHES / FEET / YARDS / CENTIMETERS): ");
-                string? unitInput1 = Console.ReadLine();
-                LengthUnit unit1 = GetUnit(unitInput1 ?? "");
-
-                Console.Write("Enter second value: ");
-                string? input2 = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(input2))
-                    throw new Exception("Value cannot be empty");
-                double value2 = Convert.ToDouble(input2);
-
-                Console.Write("Enter second unit (INCHES / FEET / YARDS / CENTIMETERS): ");
-                string? unitInput2 = Console.ReadLine();
-                LengthUnit unit2 = GetUnit(unitInput2 ?? "");
-
-                QuantityLength q1 = new QuantityLength(value1, unit1);
-                QuantityLength q2 = new QuantityLength(value2, unit2);
-
-                QuantityMeasurementApp.Compare(q1, q2);
-            }
-            catch (InvalidLengthException e)
-            {
-                Console.WriteLine("Length Error: " + e.Message);
-            }
-            catch (InvalidUnitException e)
-            {
-                Console.WriteLine("Unit Error: " + e.Message);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Unexpected Error: " + e.Message);
-            }
-        }
-
-        static void RunAdvancedYardEqualityTesting()
-        {
-            Console.WriteLine("\n=== UC4 - Advanced Yard Equality Testing ===");
-            Console.WriteLine("This feature tests comprehensive equality across all length units.");
-            Console.WriteLine("Running automated tests...");
-
-            // Run the test suite
-            var testAssembly = typeof(Program).Assembly;
-            // For now, we'll simulate running tests by calling key test scenarios
-            RunYardEqualityScenarios();
-
-            Console.WriteLine("Advanced equality testing completed!");
-        }
-
-        static void RunYardEqualityScenarios()
-        {
-            Console.WriteLine("\nTesting Yard Equality Scenarios:");
-
-            // Test cases from the test suite
-            QuantityLength yard1 = new QuantityLength(1.0, LengthUnit.YARDS);
-            QuantityLength feet3 = new QuantityLength(3.0, LengthUnit.FEET);
-            QuantityLength inches36 = new QuantityLength(36.0, LengthUnit.INCHES);
-
-            Console.WriteLine($"1 yard = 3 feet: {yard1.Equals(feet3)}");
-            Console.WriteLine($"3 feet = 36 inches: {feet3.Equals(inches36)}");
-            Console.WriteLine($"1 yard = 36 inches: {yard1.Equals(inches36)}");
-
-            // Test different values
-            QuantityLength yard2 = new QuantityLength(2.0, LengthUnit.YARDS);
-            QuantityLength feet6 = new QuantityLength(6.0, LengthUnit.FEET);
-            QuantityLength inches72 = new QuantityLength(72.0, LengthUnit.INCHES);
-
-            Console.WriteLine($"2 yards = 6 feet: {yard2.Equals(feet6)}");
-            Console.WriteLine($"6 feet = 72 inches: {feet6.Equals(inches72)}");
-            Console.WriteLine($"2 yards = 72 inches: {yard2.Equals(inches72)}");
-
-            // Test centimeters
-            QuantityLength cm1 = new QuantityLength(1.0, LengthUnit.CENTIMETERS);
-            QuantityLength inch_cm = new QuantityLength(0.393701, LengthUnit.INCHES);
-            Console.WriteLine($"1 cm ≈ 0.393701 inches: {cm1.Equals(inch_cm)}");
-        }
-
-        static void Main()
-        {
-            bool running = true;
-
-            while (running)
-            {
-                DisplayMenu();
-                string? choice = Console.ReadLine();
-
-                if (string.IsNullOrWhiteSpace(choice))
-                {
-                    Console.WriteLine("\nInvalid choice. Please select 1-5.\n");
-                    continue;
-                }
+                Console.WriteLine("\n=== Quantity Measurement App UC1–UC5 ===");
+                Console.WriteLine("1. Compare Feet (UC1)");
+                Console.WriteLine("2. Compare Inches (UC2)");
+                Console.WriteLine("3. Compare QuantityLength (UC3 + UC4)");
+                Console.WriteLine("4. Convert Units (UC5)");
+                Console.WriteLine("5. Exit");
+                Console.Write("Enter your choice: ");
+                string choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
-                        RunBasicLengthComparison();
+                        CompareFeet(service);
                         break;
                     case "2":
-                        Console.WriteLine("\nUC2 - Weight/Mass Comparison is not yet implemented.");
-                        Console.WriteLine("This feature will be available in a future update.\n");
+                        CompareInches(service);
                         break;
                     case "3":
-                        Console.WriteLine("\nUC3 - Temperature Comparison is not yet implemented.");
-                        Console.WriteLine("This feature will be available in a future update.\n");
+                        CompareQuantity(service);
                         break;
                     case "4":
-                        RunAdvancedYardEqualityTesting();
+                        ConvertUnits(service);
                         break;
                     case "5":
-                        Console.WriteLine("\nThank you for using Quantity Measurement System!");
-                        running = false;
+                        exit = true;
+                        Console.WriteLine("Exiting app...");
                         break;
                     default:
-                        Console.WriteLine("\nInvalid choice. Please select 1-5.\n");
+                        Console.WriteLine("Invalid choice! Try again.");
                         break;
                 }
+            }
+        }
 
-                if (running)
+        // ===== UC1 =====
+        private static void CompareFeet(QuantityMeasurementService service)
+        {
+            Console.Write("Enter first value in feet: ");
+            double f1Val = GetDoubleInput();
+            Console.Write("Enter second value in feet: ");
+            double f2Val = GetDoubleInput();
+
+            Feet f1 = new Feet(f1Val);
+            Feet f2 = new Feet(f2Val);
+
+            bool result = service.AreFeetEqual(f1, f2);
+            Console.WriteLine($"Feet Equal? {result}");
+        }
+
+        // ===== UC2 =====
+        private static void CompareInches(QuantityMeasurementService service)
+        {
+            Console.Write("Enter first value in inches: ");
+            double i1Val = GetDoubleInput();
+            Console.Write("Enter second value in inches: ");
+            double i2Val = GetDoubleInput();
+
+            Inches i1 = new Inches(i1Val);
+            Inches i2 = new Inches(i2Val);
+
+            bool result = service.AreInchesEqual(i1, i2);
+            Console.WriteLine($"Inches Equal? {result}");
+        }
+
+        // ===== UC3 + UC4 =====
+        private static void CompareQuantity(QuantityMeasurementService service)
+        {
+            Console.WriteLine("Supported units: Feet, Inch, Yard, Cm");
+            Console.Write("Enter first value: ");
+            double val1 = GetDoubleInput();
+            LengthUnit unit1 = GetUnitInput();
+
+            Console.Write("Enter second value: ");
+            double val2 = GetDoubleInput();
+            LengthUnit unit2 = GetUnitInput();
+
+            QuantityLength q1 = new QuantityLength(val1, unit1);
+            QuantityLength q2 = new QuantityLength(val2, unit2);
+
+            bool result = service.AreEqual(q1, q2);
+            Console.WriteLine($"Are Quantities Equal? {result}");
+        }
+
+        // ===== UC5 =====
+        private static void ConvertUnits(QuantityMeasurementService service)
+        {
+            Console.WriteLine("Supported units: Feet, Inch, Yard, Cm");
+            Console.Write("Enter value to convert: ");
+            double val = GetDoubleInput();
+            Console.Write("Enter source unit: ");
+            LengthUnit sourceUnit = GetUnitInput();
+            Console.Write("Enter target unit: ");
+            LengthUnit targetUnit = GetUnitInput();
+
+            try
+            {
+                double converted = service.Convert(val, sourceUnit, targetUnit);
+                Console.WriteLine($"{val} {sourceUnit} = {converted} {targetUnit}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        // Helper methods
+        private static double GetDoubleInput()
+        {
+            while (true)
+            {
+                string input = Console.ReadLine();
+                if (double.TryParse(input, out double value))
+                    return value;
+                Console.Write("Invalid input! Enter a numeric value: ");
+            }
+        }
+
+        private static LengthUnit GetUnitInput()
+        {
+            while (true)
+            {
+                string input = Console.ReadLine().Trim().ToLower();
+                return input switch
                 {
-                    Console.WriteLine("Press any key to continue...");
-                    Console.ReadKey();
-                    Console.Clear();
-                }
+                    "feet" => LengthUnit.Feet,
+                    "inch" => LengthUnit.Inch,
+                    "yard" => LengthUnit.Yard,
+                    "cm" => LengthUnit.Cm,
+                    _ => throw new ArgumentException("Unsupported unit type")
+                };
             }
         }
     }

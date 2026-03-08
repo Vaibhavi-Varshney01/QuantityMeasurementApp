@@ -1,40 +1,32 @@
-# Build folders
+# Build Folders
 bin/
 obj/
-
-# User specific files
-*.user
-*.rsuser
-*.suo
+out/
 
 # Visual Studio files
 .vs/
+*.user
+*.suo
+*.sln.docstates
 
-# Rider / VSCode
+# Rider IDE
 .idea/
-.vscode/
 
-# Logs
-*.log
-
-# OS generated files
-.DS_Store
-Thumbs.db
- 
-# Test results
-TestResults/
- 
 # NuGet packages
 *.nupkg
 packages/
 
-# Coverage files
-coverage/
-*.coverage
-*.coveragexml
+# .NET Core publish folder
+publish/
 
-# Dotnet generated
-*.runtimeconfig.dev.json
-project.lock.json
-project.fragment.lock.json
-artifacts/
+# Temporary files
+*.log
+*.tmp
+*.cache
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# NUnit Test Results
+TestResults/
