@@ -1,37 +1,8 @@
-# Build results
 bin/
 obj/
-
-# Visual Studio files
 *.user
 *.suo
 *.vscode/
-*.vs/
-
-# Rider files
-.idea/
-
-# NuGet packages
-*.nupkg
-*.snupkg
-*.nuspec
-packages/
-
-# Logs
+*.DS_Store
 *.log
-
-# Resharper
-_ReSharper*/
-*.DotSettings.user
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Test results
-TestResults/
-*.trx
-
-# Temporary files
-*.tmp
-*.temp
+*.pdb
