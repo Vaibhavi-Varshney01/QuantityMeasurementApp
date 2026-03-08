@@ -55,5 +55,56 @@ namespace QuantityMeasurementApp.Service
 
             return new QuantityLength(result, targetUnit);
         }
+
+        // -------------------------------
+        // UC9 : Weight Measurement
+        // -------------------------------
+
+        // Compare Weight
+        public bool AreWeightEqual(QuantityWeight w1, QuantityWeight w2)
+        {
+            if (w1 == null || w2 == null) return false;
+
+            double val1 = w1.Unit.ConvertToBaseUnit(w1.Value);
+            double val2 = w2.Unit.ConvertToBaseUnit(w2.Value);
+
+            return Math.Abs(val1 - val2) < 0.0001;
+        }
+
+        // Convert Weight
+        public double ConvertWeight(double value, WeightUnit source, WeightUnit target)
+        {
+            if (double.IsNaN(value) || double.IsInfinity(value))
+                throw new ArgumentException("Invalid numeric value");
+
+            double baseValue = source.ConvertToBaseUnit(value);
+
+            return target.ConvertFromBaseUnit(baseValue);
+        }
+
+        // Add Weight
+        public QuantityWeight AddWeight(QuantityWeight w1, QuantityWeight w2)
+        {
+            if (w1 == null || w2 == null)
+                throw new ArgumentException("Weight operands cannot be null");
+
+            return AddWeight(w1, w2, w1.Unit);
+        }
+
+        // Add Weight with Target Unit
+        public QuantityWeight AddWeight(QuantityWeight w1, QuantityWeight w2, WeightUnit targetUnit)
+        {
+            if (w1 == null || w2 == null)
+                throw new ArgumentException("Weight cannot be null");
+
+            double val1 = w1.Unit.ConvertToBaseUnit(w1.Value);
+            double val2 = w2.Unit.ConvertToBaseUnit(w2.Value);
+
+            double sumBase = val1 + val2;
+
+            double result = targetUnit.ConvertFromBaseUnit(sumBase);
+
+            return new QuantityWeight(result, targetUnit);
+        }
     }
 }

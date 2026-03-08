@@ -1,4 +1,4 @@
-# Build results
+# Build folders
 bin/
 obj/
 
@@ -22,14 +22,14 @@ obj/
 *.nupkg
 packages/
 
-# OS files
+# OS generated files
 .DS_Store
 Thumbs.db
 
 # Test results
 TestResults/
 
-# Dotnet tools
+# .NET tools
 .dotnet/
 
 # Temporary files

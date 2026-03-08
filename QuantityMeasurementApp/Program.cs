@@ -21,7 +21,10 @@ namespace QuantityMeasurementApp
                 Console.WriteLine("5. Add Lengths (UC6)");
                 Console.WriteLine("6. Add Lengths with Target Unit (UC7)");
                 Console.WriteLine("7. LengthUnit Conversion Demo (UC8)");
-                Console.WriteLine("8. Exit");
+                Console.WriteLine("8. Compare Weight (UC9)");
+                Console.WriteLine("9. Convert Weight (UC9)");
+                Console.WriteLine("10. Add Weight (UC9)");
+                Console.WriteLine("11. Exit");
 
                 Console.Write("Enter choice: ");
                 string choice = Console.ReadLine();
@@ -129,7 +132,6 @@ namespace QuantityMeasurementApp
                         break;
 
                     case "7":
-                        // UC8 demonstration
                         Console.Write("Enter value: ");
                         double uc8Val = double.Parse(Console.ReadLine());
 
@@ -149,6 +151,60 @@ namespace QuantityMeasurementApp
                         break;
 
                     case "8":
+                        Console.Write("Enter first weight: ");
+                        double w1 = double.Parse(Console.ReadLine());
+
+                        Console.Write("Enter unit (Kilogram/Gram/Pound): ");
+                        WeightUnit wu1 = Enum.Parse<WeightUnit>(Console.ReadLine(), true);
+
+                        Console.Write("Enter second weight: ");
+                        double w2 = double.Parse(Console.ReadLine());
+
+                        Console.Write("Enter unit (Kilogram/Gram/Pound): ");
+                        WeightUnit wu2 = Enum.Parse<WeightUnit>(Console.ReadLine(), true);
+
+                        Console.WriteLine("Equal: " +
+                            service.AreWeightEqual(
+                                new QuantityWeight(w1, wu1),
+                                new QuantityWeight(w2, wu2)));
+                        break;
+
+                    case "9":
+                        Console.Write("Enter weight value: ");
+                        double wVal = double.Parse(Console.ReadLine());
+
+                        Console.Write("Enter source unit (Kilogram/Gram/Pound): ");
+                        WeightUnit ws = Enum.Parse<WeightUnit>(Console.ReadLine(), true);
+
+                        Console.Write("Enter target unit (Kilogram/Gram/Pound): ");
+                        WeightUnit wt = Enum.Parse<WeightUnit>(Console.ReadLine(), true);
+
+                        double wConverted = service.ConvertWeight(wVal, ws, wt);
+
+                        Console.WriteLine($"Converted Weight = {wConverted} {wt}");
+                        break;
+
+                    case "10":
+                        Console.Write("Enter first weight: ");
+                        double aw1 = double.Parse(Console.ReadLine());
+
+                        Console.Write("Enter first unit: ");
+                        WeightUnit awu1 = Enum.Parse<WeightUnit>(Console.ReadLine(), true);
+
+                        Console.Write("Enter second weight: ");
+                        double aw2 = double.Parse(Console.ReadLine());
+
+                        Console.Write("Enter second unit: ");
+                        WeightUnit awu2 = Enum.Parse<WeightUnit>(Console.ReadLine(), true);
+
+                        QuantityWeight weightSum = service.AddWeight(
+                            new QuantityWeight(aw1, awu1),
+                            new QuantityWeight(aw2, awu2));
+
+                        Console.WriteLine($"Sum = {weightSum.Value} {weightSum.Unit}");
+                        break;
+
+                    case "11":
                         exit = true;
                         Console.WriteLine("Exiting program...");
                         break;
