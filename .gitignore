@@ -1,34 +1,30 @@
-# Visual Studio / .NET
-.vs/
+## Ignore Visual Studio temporary files, build results, and user-specific files
+
+# Build Folders
 bin/
 obj/
+
+# Visual Studio
+.vs/
 *.user
 *.suo
-*.pdb
-*.cache
-*.log
-*.ide
-*.DS_Store
+*.userosscache
 *.sln.docstates
-_ReSharper*/
 
-# Rider IDE
+# Rider
 .idea/
 
-# NuGet packages
+# OS Generated Files
+.DS_Store
+Thumbs.db
+
+# NuGet
 *.nupkg
+*.snupkg
 packages/
 
-# Build results
-*.dll
-*.exe
-*.app
-*.lib
-*.so
-*.dylib
+# Dotnet publish
+publish/
 
-# Test result folders
-TestResults/
-
-# Rider / VS Code
-.vscode/
+# Logs
+*.log
