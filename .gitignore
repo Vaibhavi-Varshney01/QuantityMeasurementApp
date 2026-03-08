@@ -1,33 +1,33 @@
-# Visual Studio / .NET
+# Build results
 bin/
 obj/
+
+# Visual Studio files
+.vs/
 *.user
 *.suo
-*.vscode/
-*.vs/
-*.log
-*.ncrunch*
-*.idea/
-*.resharper
-*.dotCover
+*.userosscache
+*.sln.docstates
 
-# Rider IDE
+# Rider
 .idea/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test results
+TestResults/
 
 # NuGet
 *.nupkg
-*.snupkg
 packages/
-*.config
 
-# OS generated
-.DS_Store
-Thumbs.db
-desktop.ini
+# Logs
+*.log
 
-# Build output
-*.dll
-*.exe
-*.pdb
-*.cache
-*.mdb
+# Environment
+.env

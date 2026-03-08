@@ -65,22 +65,24 @@ namespace QuantityMeasurementTests
             Assert.That(service.AreInchesEqual(i1, i2!), Is.False);
         }
 
-        // ===== UC2: Feet vs Inches =====
-        [Test]
-        public void TestEquality_FeetToInch_EquivalentValue()
-        {
-            Feet f = new Feet(1.0);
-            Inches i = new Inches(12.0);
-            Assert.That(service.AreFeetEqual(f, i), Is.True);
-        }
+       // ===== UC2: Feet vs Inches =====
+[Test]
+public void TestEquality_FeetToInch_EquivalentValue()
+{
+    QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Feet);
+    QuantityLength q2 = new QuantityLength(12.0, LengthUnit.Inch);
 
-        [Test]
-        public void TestEquality_FeetToInch_DifferentValue()
-        {
-            Feet f = new Feet(1.0);
-            Inches i = new Inches(10.0);
-            Assert.That(service.AreFeetEqual(f, i), Is.False);
-        }
+    Assert.That(service.AreEqual(q1, q2), Is.True);
+}
+
+[Test]
+public void TestEquality_FeetToInch_DifferentValue()
+{
+    QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Feet);
+    QuantityLength q2 = new QuantityLength(10.0, LengthUnit.Inch);
+
+    Assert.That(service.AreEqual(q1, q2), Is.False);
+}
 
         // ===== UC3: QuantityLength =====
         [Test]

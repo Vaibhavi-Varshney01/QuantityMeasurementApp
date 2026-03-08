@@ -13,40 +13,27 @@ namespace QuantityMeasurementApp
 
             while (!exit)
             {
-                Console.WriteLine("\n=== Quantity Measurement App UC1–UC6 ===");
+                Console.WriteLine("\n=== Quantity Measurement App UC1–UC7 ===");
                 Console.WriteLine("1. Compare Feet (UC1)");
                 Console.WriteLine("2. Compare Inches (UC2)");
                 Console.WriteLine("3. Compare QuantityLength (UC3 + UC4)");
                 Console.WriteLine("4. Convert Units (UC5)");
                 Console.WriteLine("5. Add Two Lengths (UC6)");
-                Console.WriteLine("6. Exit");
+                Console.WriteLine("6. Add Two Lengths with Target Unit (UC7)");
+                Console.WriteLine("7. Exit");
                 Console.Write("Enter your choice: ");
                 string choice = Console.ReadLine();
 
                 switch (choice)
                 {
-                    case "1":
-                        CompareFeet(service);
-                        break;
-                    case "2":
-                        CompareInches(service);
-                        break;
-                    case "3":
-                        CompareQuantity(service);
-                        break;
-                    case "4":
-                        ConvertUnits(service);
-                        break;
-                    case "5":
-                        AddLengths(service);
-                        break;
-                    case "6":
-                        exit = true;
-                        Console.WriteLine("Exiting app...");
-                        break;
-                    default:
-                        Console.WriteLine("Invalid choice! Try again.");
-                        break;
+                    case "1": CompareFeet(service); break;
+                    case "2": CompareInches(service); break;
+                    case "3": CompareQuantity(service); break;
+                    case "4": ConvertUnits(service); break;
+                    case "5": AddLengths(service); break;
+                    case "6": AddLengthsWithTargetUnit(service); break;
+                    case "7": exit = true; Console.WriteLine("Exiting app..."); break;
+                    default: Console.WriteLine("Invalid choice! Try again."); break;
                 }
             }
         }
@@ -114,7 +101,7 @@ namespace QuantityMeasurementApp
             try
             {
                 double converted = service.Convert(val, sourceUnit, targetUnit);
-                Console.WriteLine($"{val} {sourceUnit} = {converted} {targetUnit}");
+                Console.WriteLine($"{val} {sourceUnit} = {converted:F3} {targetUnit}");
             }
             catch (Exception ex)
             {
@@ -140,7 +127,36 @@ namespace QuantityMeasurementApp
             try
             {
                 QuantityLength sum = service.Add(q1, q2);
-                Console.WriteLine($"Sum: {sum.Value} {sum.Unit}");
+                Console.WriteLine($"Sum: {sum.Value:F3} {sum.Unit}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        // ===== UC7 =====
+        private static void AddLengthsWithTargetUnit(QuantityMeasurementService service)
+        {
+            Console.WriteLine("Supported units: Feet, Inch, Yard, Cm");
+            Console.Write("Enter first value: ");
+            double val1 = GetDoubleInput();
+            LengthUnit unit1 = GetUnitInput();
+
+            Console.Write("Enter second value: ");
+            double val2 = GetDoubleInput();
+            LengthUnit unit2 = GetUnitInput();
+
+            Console.Write("Enter target unit: ");
+            LengthUnit targetUnit = GetUnitInput();
+
+            QuantityLength q1 = new QuantityLength(val1, unit1);
+            QuantityLength q2 = new QuantityLength(val2, unit2);
+
+            try
+            {
+                QuantityLength sum = service.Add(q1, q2, targetUnit);
+                Console.WriteLine($"Sum in {targetUnit}: {sum.Value:F3} {sum.Unit}");
             }
             catch (Exception ex)
             {
