@@ -24,194 +24,216 @@ namespace QuantityMeasurementApp
                 Console.WriteLine("8. Compare Weight (UC9)");
                 Console.WriteLine("9. Convert Weight (UC9)");
                 Console.WriteLine("10. Add Weight (UC9)");
-                Console.WriteLine("11. Exit");
+                Console.WriteLine("11. Generic Equality (UC10)");
+                Console.WriteLine("12. Generic Conversion (UC10)");
+                Console.WriteLine("13. Generic Addition (UC10)");
+                Console.WriteLine("14. Exit");
 
                 Console.Write("Enter choice: ");
                 string choice = Console.ReadLine();
 
-                switch (choice)
+                try
                 {
-                    case "1":
-                        Console.Write("Enter first feet value: ");
-                        double f1 = double.Parse(Console.ReadLine());
+                    switch (choice)
+                    {
+                        // UC1 - Compare Feet
+                        case "1":
+                            Console.Write("Enter first feet value: ");
+                            double f1 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter second feet value: ");
+                            double f2 = double.Parse(Console.ReadLine()!);
+                            Console.WriteLine("Equal: " + service.AreEqual(new Quantity<LengthUnit>(f1, LengthUnit.Feet),
+                                                                         new Quantity<LengthUnit>(f2, LengthUnit.Feet)));
+                            break;
 
-                        Console.Write("Enter second feet value: ");
-                        double f2 = double.Parse(Console.ReadLine());
+                        // UC2 - Compare Inches
+                        case "2":
+                            Console.Write("Enter first inches value: ");
+                            double i1 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter second inches value: ");
+                            double i2 = double.Parse(Console.ReadLine()!);
+                            Console.WriteLine("Equal: " + service.AreEqual(new Quantity<LengthUnit>(i1, LengthUnit.Inch),
+                                                                         new Quantity<LengthUnit>(i2, LengthUnit.Inch)));
+                            break;
 
-                        Console.WriteLine("Equal: " +
-                            service.AreFeetEqual(new Feet(f1), new Feet(f2)));
-                        break;
+                        // UC3 + UC4 - Compare any LengthUnit
+                        case "3":
+                            Console.Write("Enter first value: ");
+                            double v1 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter first unit (Feet/Inch/Yard/Cm): ");
+                            LengthUnit u1 = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
+                            Console.Write("Enter second value: ");
+                            double v2 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter second unit (Feet/Inch/Yard/Cm): ");
+                            LengthUnit u2 = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
 
-                    case "2":
-                        Console.Write("Enter first inches value: ");
-                        double i1 = double.Parse(Console.ReadLine());
+                            var q1 = new Quantity<LengthUnit>(v1, u1);
+                            var q2 = new Quantity<LengthUnit>(v2, u2);
+                            Console.WriteLine("Equal: " + service.AreEqual(q1, q2));
+                            break;
 
-                        Console.Write("Enter second inches value: ");
-                        double i2 = double.Parse(Console.ReadLine());
+                        // UC5 - Convert LengthUnit
+                        case "4":
+                            Console.Write("Enter value: ");
+                            double val = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter source unit (Feet/Inch/Yard/Cm): ");
+                            LengthUnit src = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
+                            Console.Write("Enter target unit (Feet/Inch/Yard/Cm): ");
+                            LengthUnit tgt = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
 
-                        Console.WriteLine("Equal: " +
-                            service.AreInchesEqual(new Inches(i1), new Inches(i2)));
-                        break;
+                            var converted = service.Convert(new Quantity<LengthUnit>(val, src), tgt);
+                            Console.WriteLine($"Converted = {converted.Value} {converted.Unit}");
+                            break;
 
-                    case "3":
-                        Console.Write("Enter first value: ");
-                        double v1 = double.Parse(Console.ReadLine());
+                        // UC6 - Add Lengths
+                        case "5":
+                            Console.Write("Enter first value: ");
+                            double a1 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter first unit (Feet/Inch/Yard/Cm): ");
+                            LengthUnit au1 = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
+                            Console.Write("Enter second value: ");
+                            double a2 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter second unit (Feet/Inch/Yard/Cm): ");
+                            LengthUnit au2 = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
 
-                        Console.Write("Enter first unit (Feet/Inch/Yard/Cm): ");
-                        LengthUnit u1 = Enum.Parse<LengthUnit>(Console.ReadLine(), true);
+                            var sum = service.Add(new Quantity<LengthUnit>(a1, au1),
+                                                  new Quantity<LengthUnit>(a2, au2));
+                            Console.WriteLine($"Sum = {sum.Value} {sum.Unit}");
+                            break;
 
-                        Console.Write("Enter second value: ");
-                        double v2 = double.Parse(Console.ReadLine());
+                        // UC7 - Add Lengths with Target Unit
+                        case "6":
+                            Console.Write("Enter first value: ");
+                            double b1 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter first unit (Feet/Inch/Yard/Cm): ");
+                            LengthUnit bu1 = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
+                            Console.Write("Enter second value: ");
+                            double b2 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter second unit (Feet/Inch/Yard/Cm): ");
+                            LengthUnit bu2 = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
+                            Console.Write("Enter target unit (Feet/Inch/Yard/Cm): ");
+                            LengthUnit tgtUnit = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
 
-                        Console.Write("Enter second unit (Feet/Inch/Yard/Cm): ");
-                        LengthUnit u2 = Enum.Parse<LengthUnit>(Console.ReadLine(), true);
+                            var result = service.Add(new Quantity<LengthUnit>(b1, bu1),
+                                                     new Quantity<LengthUnit>(b2, bu2),
+                                                     tgtUnit);
+                            Console.WriteLine($"Sum = {result.Value} {result.Unit}");
+                            break;
 
-                        Console.WriteLine("Equal: " +
-                            service.AreEqual(
-                                new QuantityLength(v1, u1),
-                                new QuantityLength(v2, u2)));
-                        break;
+                        // UC8 - LengthUnit Conversion Demo
+                        case "7":
+                            Console.WriteLine("UC8 Demo: Converting 1 Foot to Inches and Cm");
+                            var footQty = new Quantity<LengthUnit>(1, LengthUnit.Feet);
+                            var inchQty = service.Convert(footQty, LengthUnit.Inch);
+                            var cmQty = service.Convert(footQty, LengthUnit.Cm);
+                            Console.WriteLine($"1 Foot = {inchQty.Value} Inch = {cmQty.Value} Cm");
+                            break;
 
-                    case "4":
-                        Console.Write("Enter value: ");
-                        double value = double.Parse(Console.ReadLine());
+                        // UC9 - Weight Operations
+                        case "8": // Compare Weight
+                            Console.Write("Enter first weight: ");
+                            double w1 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter unit (Kg/Gm/Lb): ");
+                            WeightUnit wu1 = Enum.Parse<WeightUnit>(Console.ReadLine()!, true);
+                            Console.Write("Enter second weight: ");
+                            double w2 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter unit (Kg/Gm/Lb): ");
+                            WeightUnit wu2 = Enum.Parse<WeightUnit>(Console.ReadLine()!, true);
 
-                        Console.Write("Enter source unit: ");
-                        LengthUnit source = Enum.Parse<LengthUnit>(Console.ReadLine(), true);
+                            Console.WriteLine("Equal: " + service.AreEqual(new Quantity<WeightUnit>(w1, wu1),
+                                                                          new Quantity<WeightUnit>(w2, wu2)));
+                            break;
 
-                        Console.Write("Enter target unit: ");
-                        LengthUnit target = Enum.Parse<LengthUnit>(Console.ReadLine(), true);
+                        case "9": // Convert Weight
+                            Console.Write("Enter value: ");
+                            double wVal = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter source unit (Kg/Gm/Lb): ");
+                            WeightUnit ws = Enum.Parse<WeightUnit>(Console.ReadLine()!, true);
+                            Console.Write("Enter target unit (Kg/Gm/Lb): ");
+                            WeightUnit wt = Enum.Parse<WeightUnit>(Console.ReadLine()!, true);
 
-                        double converted = service.Convert(value, source, target);
+                            var wConverted = service.Convert(new Quantity<WeightUnit>(wVal, ws), wt);
+                            Console.WriteLine($"Converted = {wConverted.Value} {wConverted.Unit}");
+                            break;
 
-                        Console.WriteLine($"Converted Value = {converted} {target}");
-                        break;
+                        case "10": // Add Weight
+                            Console.Write("Enter first value: ");
+                            double wA1 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter first unit (Kg/Gm/Lb): ");
+                            WeightUnit wU1 = Enum.Parse<WeightUnit>(Console.ReadLine()!, true);
+                            Console.Write("Enter second value: ");
+                            double wA2 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter second unit (Kg/Gm/Lb): ");
+                            WeightUnit wU2 = Enum.Parse<WeightUnit>(Console.ReadLine()!, true);
+                            Console.Write("Enter target unit (Kg/Gm/Lb): ");
+                            WeightUnit wTarget = Enum.Parse<WeightUnit>(Console.ReadLine()!, true);
 
-                    case "5":
-                        Console.Write("Enter first value: ");
-                        double a1 = double.Parse(Console.ReadLine());
+                            var wSum = service.Add(new Quantity<WeightUnit>(wA1, wU1),
+                                                   new Quantity<WeightUnit>(wA2, wU2),
+                                                   wTarget);
+                            Console.WriteLine($"Sum = {wSum.Value} {wSum.Unit}");
+                            break;
 
-                        Console.Write("Enter first unit: ");
-                        LengthUnit au1 = Enum.Parse<LengthUnit>(Console.ReadLine(), true);
+                        // UC10 - Generic Operations
+                        case "11": // Generic Equality
+                            Console.Write("Enter first value: ");
+                            double g1 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter first unit (Feet/Inch/Yard/Cm): ");
+                            LengthUnit gu1 = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
+                            Console.Write("Enter second value: ");
+                            double g2 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter second unit (Feet/Inch/Yard/Cm): ");
+                            LengthUnit gu2 = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
 
-                        Console.Write("Enter second value: ");
-                        double a2 = double.Parse(Console.ReadLine());
+                            var genQ1 = new Quantity<LengthUnit>(g1, gu1);
+                            var genQ2 = new Quantity<LengthUnit>(g2, gu2);
+                            Console.WriteLine("Generic Equality Result: " + service.GenericAreEqual(genQ1, genQ2));
+                            break;
 
-                        Console.Write("Enter second unit: ");
-                        LengthUnit au2 = Enum.Parse<LengthUnit>(Console.ReadLine(), true);
+                        case "12": // Generic Conversion
+                            Console.Write("Enter value: ");
+                            double convVal = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter unit (Feet/Inch/Yard/Cm): ");
+                            LengthUnit convUnit = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
+                            Console.Write("Enter target unit (Feet/Inch/Yard/Cm): ");
+                            LengthUnit convTarget = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
 
-                        QuantityLength sum = service.Add(
-                            new QuantityLength(a1, au1),
-                            new QuantityLength(a2, au2));
+                            var convQ = new Quantity<LengthUnit>(convVal, convUnit);
+                            var convertedGenericQ = service.GenericConvert(convQ, convTarget);
+                            Console.WriteLine($"Converted = {convertedGenericQ.Value} {convertedGenericQ.Unit}");
+                            break;
 
-                        Console.WriteLine($"Sum = {sum.Value} {sum.Unit}");
-                        break;
+                        case "13": // Generic Addition
+                            Console.Write("Enter first value: ");
+                            double addVal1 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter first unit (Feet/Inch/Yard/Cm): ");
+                            LengthUnit addUnit1 = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
+                            Console.Write("Enter second value: ");
+                            double addVal2 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter second unit (Feet/Inch/Yard/Cm): ");
+                            LengthUnit addUnit2 = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
+                            Console.Write("Enter target unit (Feet/Inch/Yard/Cm): ");
+                            LengthUnit addTarget = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
 
-                    case "6":
-                        Console.Write("Enter first value: ");
-                        double b1 = double.Parse(Console.ReadLine());
+                            var addQ1 = new Quantity<LengthUnit>(addVal1, addUnit1);
+                            var addQ2 = new Quantity<LengthUnit>(addVal2, addUnit2);
+                            var addGenericResult = service.GenericAdd(addQ1, addQ2, addTarget);
+                            Console.WriteLine($"Addition Result = {addGenericResult.Value} {addGenericResult.Unit}");
+                            break;
 
-                        Console.Write("Enter first unit: ");
-                        LengthUnit bu1 = Enum.Parse<LengthUnit>(Console.ReadLine(), true);
+                        case "14":
+                            exit = true;
+                            Console.WriteLine("Exiting program...");
+                            break;
 
-                        Console.Write("Enter second value: ");
-                        double b2 = double.Parse(Console.ReadLine());
-
-                        Console.Write("Enter second unit: ");
-                        LengthUnit bu2 = Enum.Parse<LengthUnit>(Console.ReadLine(), true);
-
-                        Console.Write("Enter target unit: ");
-                        LengthUnit targetUnit = Enum.Parse<LengthUnit>(Console.ReadLine(), true);
-
-                        QuantityLength result = service.Add(
-                            new QuantityLength(b1, bu1),
-                            new QuantityLength(b2, bu2),
-                            targetUnit);
-
-                        Console.WriteLine($"Sum = {result.Value} {result.Unit}");
-                        break;
-
-                    case "7":
-                        Console.Write("Enter value: ");
-                        double uc8Val = double.Parse(Console.ReadLine());
-
-                        Console.Write("Enter unit (Feet/Inch/Yard/Cm): ");
-                        LengthUnit uc8Unit = Enum.Parse<LengthUnit>(Console.ReadLine(), true);
-
-                        double baseValue = uc8Unit.ConvertToBaseUnit(uc8Val);
-
-                        Console.WriteLine($"{uc8Val} {uc8Unit} = {baseValue} Feet (Base Unit)");
-
-                        Console.Write("Convert base to unit: ");
-                        LengthUnit targetUC8 = Enum.Parse<LengthUnit>(Console.ReadLine(), true);
-
-                        double finalValue = targetUC8.ConvertFromBaseUnit(baseValue);
-
-                        Console.WriteLine($"{baseValue} Feet = {finalValue} {targetUC8}");
-                        break;
-
-                    case "8":
-                        Console.Write("Enter first weight: ");
-                        double w1 = double.Parse(Console.ReadLine());
-
-                        Console.Write("Enter unit (Kilogram/Gram/Pound): ");
-                        WeightUnit wu1 = Enum.Parse<WeightUnit>(Console.ReadLine(), true);
-
-                        Console.Write("Enter second weight: ");
-                        double w2 = double.Parse(Console.ReadLine());
-
-                        Console.Write("Enter unit (Kilogram/Gram/Pound): ");
-                        WeightUnit wu2 = Enum.Parse<WeightUnit>(Console.ReadLine(), true);
-
-                        Console.WriteLine("Equal: " +
-                            service.AreWeightEqual(
-                                new QuantityWeight(w1, wu1),
-                                new QuantityWeight(w2, wu2)));
-                        break;
-
-                    case "9":
-                        Console.Write("Enter weight value: ");
-                        double wVal = double.Parse(Console.ReadLine());
-
-                        Console.Write("Enter source unit (Kilogram/Gram/Pound): ");
-                        WeightUnit ws = Enum.Parse<WeightUnit>(Console.ReadLine(), true);
-
-                        Console.Write("Enter target unit (Kilogram/Gram/Pound): ");
-                        WeightUnit wt = Enum.Parse<WeightUnit>(Console.ReadLine(), true);
-
-                        double wConverted = service.ConvertWeight(wVal, ws, wt);
-
-                        Console.WriteLine($"Converted Weight = {wConverted} {wt}");
-                        break;
-
-                    case "10":
-                        Console.Write("Enter first weight: ");
-                        double aw1 = double.Parse(Console.ReadLine());
-
-                        Console.Write("Enter first unit: ");
-                        WeightUnit awu1 = Enum.Parse<WeightUnit>(Console.ReadLine(), true);
-
-                        Console.Write("Enter second weight: ");
-                        double aw2 = double.Parse(Console.ReadLine());
-
-                        Console.Write("Enter second unit: ");
-                        WeightUnit awu2 = Enum.Parse<WeightUnit>(Console.ReadLine(), true);
-
-                        QuantityWeight weightSum = service.AddWeight(
-                            new QuantityWeight(aw1, awu1),
-                            new QuantityWeight(aw2, awu2));
-
-                        Console.WriteLine($"Sum = {weightSum.Value} {weightSum.Unit}");
-                        break;
-
-                    case "11":
-                        exit = true;
-                        Console.WriteLine("Exiting program...");
-                        break;
-
-                    default:
-                        Console.WriteLine("Invalid choice!");
-                        break;
+                        default:
+                            Console.WriteLine("Invalid choice!");
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
                 }
             }
         }

@@ -2,28 +2,23 @@ namespace QuantityMeasurementApp.Model
 {
     public class Inches
     {
-        public double Value { get; }
+        public double Value { get; set; }
 
         public Inches(double value)
         {
             Value = value;
         }
 
-        // Null-safe Equals method
-        public bool Equals(Inches other)
+        // Proper Equals override
+        public override bool Equals(object? obj)
         {
-            if (other == null) return false; //  null check 
+            if (obj is null) return false;
+            if (obj.GetType() != this.GetType()) return false;
+
+            var other = (Inches)obj;
             return Value == other.Value;
         }
 
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as Inches); // call the null-safe method
-        }
-
-        public override int GetHashCode()
-        {
-            return Value.GetHashCode();
-        }
+        public override int GetHashCode() => Value.GetHashCode();
     }
 }

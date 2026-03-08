@@ -2,25 +2,24 @@ namespace QuantityMeasurementApp.Model
 {
     public class Feet
     {
-        public double Value { get; }
+        public double Value { get; set; }
 
         public Feet(double value)
         {
             Value = value;
         }
 
-        // Null-safe Equals method
-        public bool Equals(Feet other)
+        // Null-safe Equals override
+        public override bool Equals(object? obj)
         {
-            if (other == null) return false; // <-- null check added
+            if (obj is null) return false;
+            if (obj.GetType() != this.GetType()) return false;
+
+            var other = (Feet)obj;
             return Value == other.Value;
         }
 
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as Feet); // call the null-safe method
-        }
-
+        // Keep only one GetHashCode
         public override int GetHashCode()
         {
             return Value.GetHashCode();

@@ -1,39 +1,35 @@
-using System;
+using QuantityMeasurementApp.Unit;
 
-namespace QuantityMeasurementApp.Model
+namespace QuantityMeasurementApp.Unit
 {
-    public enum LengthUnit
+    public enum LengthUnit : int
     {
-        Feet,
-        Inch,
-        Yard,
-        Cm
+        FEET = 1,
+        INCHES = 12,
+        YARDS = 36,
+        CENTIMETERS = 30 // just example factor to inches
     }
 
     public static class LengthUnitExtensions
     {
-        public static double ConvertToBaseUnit(this LengthUnit unit, double value)
+        public static double GetConversionFactor(this LengthUnit unit)
         {
             return unit switch
             {
-                LengthUnit.Feet => value,
-                LengthUnit.Inch => value / 12.0,
-                LengthUnit.Yard => value * 3.0,
-                LengthUnit.Cm => value * 0.0328084,
-                _ => throw new ArgumentException("Unsupported unit")
+                LengthUnit.FEET => 12.0,
+                LengthUnit.INCHES => 1.0,
+                LengthUnit.YARDS => 36.0,
+                LengthUnit.CENTIMETERS => 0.393701,
+                _ => throw new ArgumentException("Unknown LengthUnit")
             };
         }
 
-        public static double ConvertFromBaseUnit(this LengthUnit unit, double valueInFeet)
-        {
-            return unit switch
-            {
-                LengthUnit.Feet => valueInFeet,
-                LengthUnit.Inch => valueInFeet * 12.0,
-                LengthUnit.Yard => valueInFeet / 3.0,
-                LengthUnit.Cm => valueInFeet / 0.0328084,
-                _ => throw new ArgumentException("Unsupported unit")
-            };
-        }
+        public static double ConvertToBaseUnit(this LengthUnit unit, double value)
+            => value * unit.GetConversionFactor();
+
+        public static double ConvertFromBaseUnit(this LengthUnit unit, double baseValue)
+            => baseValue / unit.GetConversionFactor();
+
+        public static string GetUnitName(this LengthUnit unit) => unit.ToString();
     }
 }
