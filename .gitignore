@@ -1,30 +1,37 @@
-## Ignore Visual Studio temporary files, build results, and user-specific files
-
-# Build Folders
+# Build results
 bin/
 obj/
 
-# Visual Studio
-.vs/
+# Visual Studio files
 *.user
 *.suo
-*.userosscache
-*.sln.docstates
+*.vscode/
+*.vs/
 
-# Rider
+# Rider files
 .idea/
 
-# OS Generated Files
-.DS_Store
-Thumbs.db
-
-# NuGet
+# NuGet packages
 *.nupkg
 *.snupkg
+*.nuspec
 packages/
-
-# Dotnet publish
-publish/
 
 # Logs
 *.log
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test results
+TestResults/
+*.trx
+
+# Temporary files
+*.tmp
+*.temp

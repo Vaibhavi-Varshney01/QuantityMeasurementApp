@@ -5,158 +5,126 @@ namespace QuantityMeasurementApp.Service
 {
     public class QuantityMeasurementService
     {
-        #region Length Conversion
-        private double ConvertLength(double value, LengthUnit from, LengthUnit to)
+        // UC1–UC11: Equality check
+        public bool AreEqual<U>(Quantity<U> q1, Quantity<U> q2)
         {
-            double valueInInch = from switch
-            {
-                LengthUnit.Feet => value * 12,
-                LengthUnit.Yard => value * 36,
-                LengthUnit.Cm => value / 2.54,
-                LengthUnit.Inch => value,
-                _ => throw new Exception("Invalid Length Unit")
-            };
+            if (q1 == null || q2 == null)
+                throw new ArgumentNullException("Quantities cannot be null");
 
-            return to switch
-            {
-                LengthUnit.Feet => valueInInch / 12,
-                LengthUnit.Yard => valueInInch / 36,
-                LengthUnit.Cm => valueInInch * 2.54,
-                LengthUnit.Inch => valueInInch,
-                _ => throw new Exception("Invalid Length Unit")
-            };
-        }
-        #endregion
+            if (!typeof(U).Equals(q2.Unit.GetType()))
+                throw new ArgumentException("Quantities must be of the same measurement category");
 
-        #region Weight Conversion
-        private double ConvertWeight(double value, WeightUnit from, WeightUnit to)
-        {
-            double valueInKg = from switch
-            {
-                WeightUnit.Kg => value,
-                WeightUnit.Gm => value / 1000,
-                WeightUnit.Lb => value * 0.453592,
-                _ => throw new Exception("Invalid Weight Unit")
-            };
-
-            return to switch
-            {
-                WeightUnit.Kg => valueInKg,
-                WeightUnit.Gm => valueInKg * 1000,
-                WeightUnit.Lb => valueInKg / 0.453592,
-                _ => throw new Exception("Invalid Weight Unit")
-            };
-        }
-        #endregion
-
-        #region Equality
-        public bool AreEqual(Quantity<LengthUnit> q1, Quantity<LengthUnit> q2)
-        {
-            double val1 = ConvertLength(q1.Value, q1.Unit, LengthUnit.Inch);
-            double val2 = ConvertLength(q2.Value, q2.Unit, LengthUnit.Inch);
-            return Math.Abs(val1 - val2) < 0.0001;
+            double baseQ1 = ConvertToBase(q1);
+            double baseQ2 = ConvertToBase(q2);
+            return Math.Abs(baseQ1 - baseQ2) < 1e-2; // epsilon for rounding
         }
 
-        public bool AreEqual(Quantity<WeightUnit> q1, Quantity<WeightUnit> q2)
+        // UC5–UC11: Addition
+        public Quantity<U> Add<U>(Quantity<U> q1, Quantity<U> q2, U targetUnit = default)
         {
-            double val1 = ConvertWeight(q1.Value, q1.Unit, WeightUnit.Kg);
-            double val2 = ConvertWeight(q2.Value, q2.Unit, WeightUnit.Kg);
-            return Math.Abs(val1 - val2) < 0.0001;
+            if (q1 == null || q2 == null)
+                throw new ArgumentNullException("Quantities cannot be null");
+
+            if (!typeof(U).Equals(q2.Unit.GetType()))
+                throw new ArgumentException("Quantities must be of the same measurement category");
+
+            double baseSum = ConvertToBase(q1) + ConvertToBase(q2);
+            U target = targetUnit.Equals(default(U)) ? q1.Unit : targetUnit;
+            double finalValue = ConvertFromBase(baseSum, target);
+            return new Quantity<U>(Math.Round(finalValue, 2), target);
         }
 
-        // Generic Equality (UC10)
-        public bool GenericAreEqual<TUnit>(Quantity<TUnit> q1, Quantity<TUnit> q2)
+        // UC12: Subtraction
+        public Quantity<U> Subtract<U>(Quantity<U> q1, Quantity<U> q2, U targetUnit = default)
         {
-            if (typeof(TUnit) == typeof(LengthUnit))
-                return AreEqual(q1 as Quantity<LengthUnit>, q2 as Quantity<LengthUnit>);
-            else if (typeof(TUnit) == typeof(WeightUnit))
-                return AreEqual(q1 as Quantity<WeightUnit>, q2 as Quantity<WeightUnit>);
+            if (q1 == null || q2 == null)
+                throw new ArgumentNullException("Quantities cannot be null");
+
+            if (!typeof(U).Equals(q2.Unit.GetType()))
+                throw new ArgumentException("Quantities must be of the same measurement category");
+
+            double baseResult = ConvertToBase(q1) - ConvertToBase(q2);
+            U target = targetUnit.Equals(default(U)) ? q1.Unit : targetUnit;
+            double finalValue = ConvertFromBase(baseResult, target);
+            return new Quantity<U>(Math.Round(finalValue, 2), target);
+        }
+
+        // UC12: Division
+        public double Divide<U>(Quantity<U> q1, Quantity<U> q2)
+        {
+            if (q1 == null || q2 == null)
+                throw new ArgumentNullException("Quantities cannot be null");
+
+            if (!typeof(U).Equals(q2.Unit.GetType()))
+                throw new ArgumentException("Quantities must be of the same measurement category");
+
+            double divisor = ConvertToBase(q2);
+            if (Math.Abs(divisor) < 1e-10)
+                throw new DivideByZeroException("Cannot divide by zero quantity");
+
+            return ConvertToBase(q1) / divisor;
+        }
+
+        // Helper: Convert to base unit
+        private double ConvertToBase<U>(Quantity<U> quantity)
+        {
+            if (quantity.Unit is LengthUnit l)
+                return l switch
+                {
+                    LengthUnit.Feet => quantity.Value * 12,
+                    LengthUnit.Yard => quantity.Value * 36,
+                    LengthUnit.Cm => quantity.Value / 2.54,
+                    LengthUnit.Inch => quantity.Value,
+                    _ => throw new Exception("Invalid LengthUnit")
+                };
+            else if (quantity.Unit is WeightUnit w)
+                return w switch
+                {
+                    WeightUnit.Kg => quantity.Value,
+                    WeightUnit.Gm => quantity.Value / 1000,
+                    WeightUnit.Lb => quantity.Value * 0.453592,
+                    _ => throw new Exception("Invalid WeightUnit")
+                };
+            else if (quantity.Unit is VolumeUnit v)
+                return v switch
+                {
+                    VolumeUnit.Litre => quantity.Value,
+                    VolumeUnit.Millilitre => quantity.Value / 1000,
+                    _ => throw new Exception("Invalid VolumeUnit")
+                };
             else
-                throw new Exception("Unsupported Unit for Generic Equality");
-        }
-        #endregion
-
-        #region Conversion
-        public Quantity<LengthUnit> Convert(Quantity<LengthUnit> q, LengthUnit targetUnit)
-        {
-            return new Quantity<LengthUnit>(ConvertLength(q.Value, q.Unit, targetUnit), targetUnit);
+                throw new Exception("Unsupported Unit Type");
         }
 
-        public Quantity<WeightUnit> Convert(Quantity<WeightUnit> q, WeightUnit targetUnit)
+        // Helper: Convert from base unit
+        private double ConvertFromBase<U>(double baseValue, U unit)
         {
-            return new Quantity<WeightUnit>(ConvertWeight(q.Value, q.Unit, targetUnit), targetUnit);
-        }
-
-        public Quantity<TUnit> GenericConvert<TUnit>(Quantity<TUnit> q, TUnit targetUnit)
-        {
-            if (typeof(TUnit) == typeof(LengthUnit))
-                return new Quantity<TUnit>((TUnit)(object)ConvertLength(
-                    (double)(object)q.Value,
-                    (LengthUnit)(object)q.Unit,
-                    (LengthUnit)(object)targetUnit), targetUnit);
-            else if (typeof(TUnit) == typeof(WeightUnit))
-                return new Quantity<TUnit>((TUnit)(object)ConvertWeight(
-                    (double)(object)q.Value,
-                    (WeightUnit)(object)q.Unit,
-                    (WeightUnit)(object)targetUnit), targetUnit);
+            if (unit is LengthUnit l)
+                return l switch
+                {
+                    LengthUnit.Feet => baseValue / 12,
+                    LengthUnit.Yard => baseValue / 36,
+                    LengthUnit.Cm => baseValue * 2.54,
+                    LengthUnit.Inch => baseValue,
+                    _ => throw new Exception("Invalid LengthUnit")
+                };
+            else if (unit is WeightUnit w)
+                return w switch
+                {
+                    WeightUnit.Kg => baseValue,
+                    WeightUnit.Gm => baseValue * 1000,
+                    WeightUnit.Lb => baseValue / 0.453592,
+                    _ => throw new Exception("Invalid WeightUnit")
+                };
+            else if (unit is VolumeUnit v)
+                return v switch
+                {
+                    VolumeUnit.Litre => baseValue,
+                    VolumeUnit.Millilitre => baseValue * 1000,
+                    _ => throw new Exception("Invalid VolumeUnit")
+                };
             else
-                throw new Exception("Unsupported Unit for Generic Conversion");
+                throw new Exception("Unsupported Unit Type");
         }
-        #endregion
-
-        #region Addition
-        public Quantity<LengthUnit> Add(Quantity<LengthUnit> q1, Quantity<LengthUnit> q2)
-        {
-            double val = ConvertLength(q1.Value, q1.Unit, LengthUnit.Inch) +
-                         ConvertLength(q2.Value, q2.Unit, LengthUnit.Inch);
-            return new Quantity<LengthUnit>(val, LengthUnit.Inch);
-        }
-
-        public Quantity<LengthUnit> Add(Quantity<LengthUnit> q1, Quantity<LengthUnit> q2, LengthUnit targetUnit)
-        {
-            double valInInch = ConvertLength(q1.Value, q1.Unit, LengthUnit.Inch) +
-                                ConvertLength(q2.Value, q2.Unit, LengthUnit.Inch);
-            double result = ConvertLength(valInInch, LengthUnit.Inch, targetUnit);
-            return new Quantity<LengthUnit>(result, targetUnit);
-        }
-
-        public Quantity<WeightUnit> Add(Quantity<WeightUnit> q1, Quantity<WeightUnit> q2, WeightUnit targetUnit)
-        {
-            double valInKg = ConvertWeight(q1.Value, q1.Unit, WeightUnit.Kg) +
-                             ConvertWeight(q2.Value, q2.Unit, WeightUnit.Kg);
-            double result = ConvertWeight(valInKg, WeightUnit.Kg, targetUnit);
-            return new Quantity<WeightUnit>(result, targetUnit);
-        }
-
-        // Generic Addition (UC10 + UC11 extended)
-        public Quantity<TUnit> GenericAdd<TUnit>(Quantity<TUnit> q1, Quantity<TUnit> q2, TUnit targetUnit)
-        {
-            if (typeof(TUnit) == typeof(LengthUnit))
-            {
-                var sum = Add(q1 as Quantity<LengthUnit>, q2 as Quantity<LengthUnit>, (LengthUnit)(object)targetUnit);
-                return new Quantity<TUnit>((TUnit)(object)sum.Value, targetUnit);
-            }
-            else if (typeof(TUnit) == typeof(WeightUnit))
-            {
-                var sum = Add(q1 as Quantity<WeightUnit>, q2 as Quantity<WeightUnit>, (WeightUnit)(object)targetUnit);
-                return new Quantity<TUnit>((TUnit)(object)sum.Value, targetUnit);
-            }
-            else
-                throw new Exception("Unsupported Unit for Generic Addition");
-        }
-
-        // UC11: Extended Generic Operations (Equality + Conversion + Addition in one call)
-        public void UC11_Demo<TUnit>(Quantity<TUnit> q1, Quantity<TUnit> q2, TUnit targetUnit)
-        {
-            Console.WriteLine($"Generic Equality: {GenericAreEqual(q1, q2)}");
-
-            var convertedQ1 = GenericConvert(q1, targetUnit);
-            var convertedQ2 = GenericConvert(q2, targetUnit);
-            Console.WriteLine($"Converted Values: Q1 = {convertedQ1.Value}, Q2 = {convertedQ2.Value}");
-
-            var addedQ = GenericAdd(q1, q2, targetUnit);
-            Console.WriteLine($"Added Value in Target Unit: {addedQ.Value}");
-        }
-        #endregion
     }
 }

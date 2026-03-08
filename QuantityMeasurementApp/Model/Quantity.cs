@@ -1,73 +1,106 @@
-using QuantityMeasurementApp.Unit;
+using System;
 
 namespace QuantityMeasurementApp.Model
 {
-    public class Quantity<U> where U : struct
+    public class Quantity<U>
     {
         public double Value { get; }
         public U Unit { get; }
 
         public Quantity(double value, U unit)
         {
-            if (!value.IsFinite())
-                throw new ArgumentException("Value must be finite");
-            this.Unit = unit;
-            this.Value = value;
+            Value = value;
+            Unit = unit ?? throw new ArgumentNullException(nameof(unit));
         }
 
-        public Quantity<U> ConvertTo(U targetUnit)
+        // Subtraction (UC12)
+        public Quantity<U> Subtract(Quantity<U> other, U targetUnit = default)
         {
-            dynamic src = Unit;
-            dynamic tgt = targetUnit;
+            if (other == null) throw new ArgumentNullException(nameof(other));
+            if (!typeof(U).Equals(other.Unit.GetType())) 
+                throw new ArgumentException("Cannot subtract quantities of different categories");
 
-            double baseValue = src.ConvertToBaseUnit(Value);
-            double result = tgt.ConvertFromBaseUnit(baseValue);
-            return new Quantity<U>(Math.Round(result, 2), targetUnit);
+            double baseThis = ConvertToBaseUnit(Value, Unit);
+            double baseOther = ConvertToBaseUnit(other.Value, other.Unit);
+            double resultBase = baseThis - baseOther;
+
+            U target = targetUnit.Equals(default(U)) ? Unit : targetUnit;
+            double finalValue = ConvertFromBaseUnit(resultBase, target);
+            return new Quantity<U>(Math.Round(finalValue, 2), target);
         }
 
-        public Quantity<U> Add(Quantity<U> other)
+        // Division (UC12)
+        public double Divide(Quantity<U> other)
         {
-            return Add(other, Unit);
+            if (other == null) throw new ArgumentNullException(nameof(other));
+            if (!typeof(U).Equals(other.Unit.GetType())) 
+                throw new ArgumentException("Cannot divide quantities of different categories");
+
+            double baseThis = ConvertToBaseUnit(Value, Unit);
+            double baseOther = ConvertToBaseUnit(other.Value, other.Unit);
+            if (Math.Abs(baseOther) < 1e-10) throw new DivideByZeroException("Cannot divide by zero quantity");
+            return baseThis / baseOther;
         }
 
-        public Quantity<U> Add(Quantity<U> other, U targetUnit)
+        // Conversion helpers
+        private double ConvertToBaseUnit(double value, U unit)
         {
-            dynamic src1 = Unit;
-            dynamic src2 = other.Unit;
-            dynamic tgt = targetUnit;
-
-            double sumBase = src1.ConvertToBaseUnit(Value) + src2.ConvertToBaseUnit(other.Value);
-            double result = tgt.ConvertFromBaseUnit(sumBase);
-            return new Quantity<U>(Math.Round(result, 2), targetUnit);
+            if (unit is LengthUnit l)
+                return l switch
+                {
+                    LengthUnit.Feet => value * 12,
+                    LengthUnit.Yard => value * 36,
+                    LengthUnit.Cm => value / 2.54,
+                    LengthUnit.Inch => value,
+                    _ => throw new Exception("Invalid LengthUnit")
+                };
+            else if (unit is WeightUnit w)
+                return w switch
+                {
+                    WeightUnit.Kg => value,
+                    WeightUnit.Gm => value / 1000,
+                    WeightUnit.Lb => value * 0.453592,
+                    _ => throw new Exception("Invalid WeightUnit")
+                };
+            else if (unit is VolumeUnit v)
+                return v switch
+                {
+                    VolumeUnit.Litre => value,
+                    VolumeUnit.Millilitre => value / 1000,
+                    _ => throw new Exception("Invalid VolumeUnit")
+                };
+            else
+                throw new Exception("Unsupported Unit Type");
         }
 
-        public override bool Equals(object obj)
+        private double ConvertFromBaseUnit(double baseValue, U unit)
         {
-            if (obj == null || obj.GetType() != this.GetType())
-                return false;
-
-            var that = (Quantity<U>)obj;
-            dynamic src1 = Unit;
-            dynamic src2 = that.Unit;
-
-            double val1 = src1.ConvertToBaseUnit(Value);
-            double val2 = src2.ConvertToBaseUnit(that.Value);
-
-            return Math.Abs(val1 - val2) < 0.0001;
+            if (unit is LengthUnit l)
+                return l switch
+                {
+                    LengthUnit.Feet => baseValue / 12,
+                    LengthUnit.Yard => baseValue / 36,
+                    LengthUnit.Cm => baseValue * 2.54,
+                    LengthUnit.Inch => baseValue,
+                    _ => throw new Exception("Invalid LengthUnit")
+                };
+            else if (unit is WeightUnit w)
+                return w switch
+                {
+                    WeightUnit.Kg => baseValue,
+                    WeightUnit.Gm => baseValue * 1000,
+                    WeightUnit.Lb => baseValue / 0.453592,
+                    _ => throw new Exception("Invalid WeightUnit")
+                };
+            else if (unit is VolumeUnit v)
+                return v switch
+                {
+                    VolumeUnit.Litre => baseValue,
+                    VolumeUnit.Millilitre => baseValue * 1000,
+                    _ => throw new Exception("Invalid VolumeUnit")
+                };
+            else
+                throw new Exception("Unsupported Unit Type");
         }
-
-        public override int GetHashCode()
-        {
-            dynamic src = Unit;
-            double baseVal = src.ConvertToBaseUnit(Value);
-            return baseVal.GetHashCode();
-        }
-
-        public override string ToString() => $"Quantity({Value}, {Unit})";
-    }
-
-    static class DoubleExtensions
-    {
-        public static bool IsFinite(this double d) => !double.IsNaN(d) && !double.IsInfinity(d);
     }
 }
