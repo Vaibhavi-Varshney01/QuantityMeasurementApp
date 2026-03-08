@@ -15,6 +15,13 @@ obj/
 # VS Code
 .vscode/
 
+# Logs
+*.log
+
+# NuGet packages
+*.nupkg
+packages/
+
 # OS files
 .DS_Store
 Thumbs.db
@@ -22,12 +29,9 @@ Thumbs.db
 # Test results
 TestResults/
 
-# NuGet
-*.nupkg
-packages/
+# Dotnet tools
+.dotnet/
 
-# Logs
-*.log
-
-# Environment
-.env
+# Temporary files
+*.tmp
+*.temp

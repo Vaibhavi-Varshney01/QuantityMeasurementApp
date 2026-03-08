@@ -14,70 +14,46 @@ namespace QuantityMeasurementApp.Service
         {
             if (q1 == null || q2 == null) return false;
 
-            double val1 = ConvertToFeet(q1.Value, q1.Unit);
-            double val2 = ConvertToFeet(q2.Value, q2.Unit);
+            double val1 = q1.Unit.ConvertToBaseUnit(q1.Value);
+            double val2 = q2.Unit.ConvertToBaseUnit(q2.Value);
 
             return Math.Abs(val1 - val2) < 0.0001;
-        }
-
-        private double ConvertToFeet(double value, LengthUnit unit)
-        {
-            return unit switch
-            {
-                LengthUnit.Feet => value,
-                LengthUnit.Inch => value / 12.0,
-                LengthUnit.Yard => value * 3.0,
-                LengthUnit.Cm => value * 0.0328084,
-                _ => throw new ArgumentException("Unsupported unit")
-            };
         }
 
         // UC5
         public double Convert(double value, LengthUnit source, LengthUnit target)
         {
-            if (!Enum.IsDefined(typeof(LengthUnit), source) || !Enum.IsDefined(typeof(LengthUnit), target))
-                throw new ArgumentException("Unsupported unit");
-
             if (double.IsNaN(value) || double.IsInfinity(value))
                 throw new ArgumentException("Invalid numeric value");
 
-            double valueInFeet = ConvertToFeet(value, source);
+            double baseValue = source.ConvertToBaseUnit(value);
 
-            return target switch
-            {
-                LengthUnit.Feet => valueInFeet,
-                LengthUnit.Inch => valueInFeet * 12.0,
-                LengthUnit.Yard => valueInFeet / 3.0,
-                LengthUnit.Cm => valueInFeet * 30.48,
-                _ => throw new ArgumentException("Unsupported unit")
-            };
+            return target.ConvertFromBaseUnit(baseValue);
         }
 
-      
-// UC6
-// UC6
-public QuantityLength Add(QuantityLength q1, QuantityLength q2)
-{
-    if (q1 == null || q2 == null)
-        throw new ArgumentException("Operands cannot be null");
+        // UC6
+        public QuantityLength Add(QuantityLength q1, QuantityLength q2)
+        {
+            if (q1 == null || q2 == null)
+                throw new ArgumentException("Operands cannot be null");
 
-    return Add(q1, q2, q1.Unit);
-}
+            return Add(q1, q2, q1.Unit);
+        }
 
-// UC7
-public QuantityLength Add(QuantityLength q1, QuantityLength q2, LengthUnit targetUnit)
-{
-    if (q1 == null || q2 == null)
-        throw new ArgumentException("Quantity cannot be null");
+        // UC7
+        public QuantityLength Add(QuantityLength q1, QuantityLength q2, LengthUnit targetUnit)
+        {
+            if (q1 == null || q2 == null)
+                throw new ArgumentException("Quantity cannot be null");
 
-    double val1 = ConvertToFeet(q1.Value, q1.Unit);
-    double val2 = ConvertToFeet(q2.Value, q2.Unit);
+            double val1 = q1.Unit.ConvertToBaseUnit(q1.Value);
+            double val2 = q2.Unit.ConvertToBaseUnit(q2.Value);
 
-    double sumFeet = val1 + val2;
+            double sumBase = val1 + val2;
 
-    double result = Convert(sumFeet, LengthUnit.Feet, targetUnit);
+            double result = targetUnit.ConvertFromBaseUnit(sumBase);
 
-    return new QuantityLength(result, targetUnit);
-} 
-  }
+            return new QuantityLength(result, targetUnit);
+        }
+    }
 }
