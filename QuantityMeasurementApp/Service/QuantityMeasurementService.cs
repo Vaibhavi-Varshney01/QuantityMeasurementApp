@@ -23,24 +23,25 @@ namespace QuantityMeasurementApp.Service
         public bool AreEqual(QuantityLength q1, QuantityLength q2)
         {
             if (q1 == null || q2 == null) return false;
-            double val1 = ConvertToInches(q1.Value, q1.Unit);
-            double val2 = ConvertToInches(q2.Value, q2.Unit);
+            double val1 = ConvertToFeet(q1.Value, q1.Unit);
+            double val2 = ConvertToFeet(q2.Value, q2.Unit);
             return Math.Abs(val1 - val2) < 0.0001;
         }
 
-        // UC5 - Unit-to-Unit Conversion using Inches as base
-        private double ConvertToInches(double value, LengthUnit unit)
+        // Base conversion helper
+        private double ConvertToFeet(double value, LengthUnit unit)
         {
             return unit switch
             {
-                LengthUnit.Feet => value * 12.0,
-                LengthUnit.Inch => value,
-                LengthUnit.Yard => value * 36.0,
-                LengthUnit.Cm => value / 2.54,
+                LengthUnit.Feet => value,
+                LengthUnit.Inch => value / 12.0,
+                LengthUnit.Yard => value * 3.0,
+                LengthUnit.Cm => value * 0.0328084, // 1 cm = 0.0328084 ft
                 _ => throw new ArgumentException("Unsupported unit")
             };
         }
 
+        // UC5: Unit-to-Unit conversion
         public double Convert(double value, LengthUnit source, LengthUnit target)
         {
             if (!Enum.IsDefined(typeof(LengthUnit), source) || !Enum.IsDefined(typeof(LengthUnit), target))
@@ -49,18 +50,40 @@ namespace QuantityMeasurementApp.Service
             if (double.IsNaN(value) || double.IsInfinity(value))
                 throw new ArgumentException("Invalid numeric value");
 
-            // Convert source value to inches
-            double valueInInches = ConvertToInches(value, source);
+            // Convert to feet
+            double valueInFeet = ConvertToFeet(value, source);
 
-            // Convert inches to target unit
+            // Convert feet to target unit
             return target switch
             {
-                LengthUnit.Inch => valueInInches,
-                LengthUnit.Feet => valueInInches / 12.0,
-                LengthUnit.Yard => valueInInches / 36.0,
-                LengthUnit.Cm => valueInInches * 2.54,
+                LengthUnit.Feet => valueInFeet,
+                LengthUnit.Inch => valueInFeet * 12.0,
+                LengthUnit.Yard => valueInFeet / 3.0,
+                LengthUnit.Cm => valueInFeet * 30.48, // 1 ft = 30.48 cm
                 _ => throw new ArgumentException("Unsupported unit")
             };
+        }
+
+        // UC6: Add two QuantityLength objects
+        public QuantityLength Add(QuantityLength q1, QuantityLength q2)
+        {
+            if (q1 == null || q2 == null)
+                throw new ArgumentException("QuantityLength operands cannot be null");
+
+            if (!Enum.IsDefined(typeof(LengthUnit), q1.Unit) || !Enum.IsDefined(typeof(LengthUnit), q2.Unit))
+                throw new ArgumentException("Unsupported unit type");
+
+            // Convert both to feet
+            double val1InFeet = ConvertToFeet(q1.Value, q1.Unit);
+            double val2InFeet = ConvertToFeet(q2.Value, q2.Unit);
+
+            // Sum
+            double sumInFeet = val1InFeet + val2InFeet;
+
+            // Convert back to first operand unit
+            double sumInTargetUnit = Convert(sumInFeet, LengthUnit.Feet, q1.Unit);
+
+            return new QuantityLength(sumInTargetUnit, q1.Unit);
         }
     }
 }

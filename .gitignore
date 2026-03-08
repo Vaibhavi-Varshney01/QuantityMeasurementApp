@@ -1,32 +1,33 @@
-# Build Folders
+# Visual Studio / .NET
 bin/
 obj/
-out/
-
-# Visual Studio files
-.vs/
 *.user
 *.suo
-*.sln.docstates
+*.vscode/
+*.vs/
+*.log
+*.ncrunch*
+*.idea/
+*.resharper
+*.dotCover
 
 # Rider IDE
 .idea/
 
-# NuGet packages
+# NuGet
 *.nupkg
+*.snupkg
 packages/
+*.config
 
-# .NET Core publish folder
-publish/
-
-# Temporary files
-*.log
-*.tmp
-*.cache
-
-# OS generated files
+# OS generated
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# NUnit Test Results
-TestResults/
+# Build output
+*.dll
+*.exe
+*.pdb
+*.cache
+*.mdb

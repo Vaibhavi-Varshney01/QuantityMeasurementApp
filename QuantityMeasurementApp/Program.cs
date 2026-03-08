@@ -13,12 +13,13 @@ namespace QuantityMeasurementApp
 
             while (!exit)
             {
-                Console.WriteLine("\n=== Quantity Measurement App UC1–UC5 ===");
+                Console.WriteLine("\n=== Quantity Measurement App UC1–UC6 ===");
                 Console.WriteLine("1. Compare Feet (UC1)");
                 Console.WriteLine("2. Compare Inches (UC2)");
                 Console.WriteLine("3. Compare QuantityLength (UC3 + UC4)");
                 Console.WriteLine("4. Convert Units (UC5)");
-                Console.WriteLine("5. Exit");
+                Console.WriteLine("5. Add Two Lengths (UC6)");
+                Console.WriteLine("6. Exit");
                 Console.Write("Enter your choice: ");
                 string choice = Console.ReadLine();
 
@@ -37,6 +38,9 @@ namespace QuantityMeasurementApp
                         ConvertUnits(service);
                         break;
                     case "5":
+                        AddLengths(service);
+                        break;
+                    case "6":
                         exit = true;
                         Console.WriteLine("Exiting app...");
                         break;
@@ -111,6 +115,32 @@ namespace QuantityMeasurementApp
             {
                 double converted = service.Convert(val, sourceUnit, targetUnit);
                 Console.WriteLine($"{val} {sourceUnit} = {converted} {targetUnit}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        // ===== UC6 =====
+        private static void AddLengths(QuantityMeasurementService service)
+        {
+            Console.WriteLine("Supported units: Feet, Inch, Yard, Cm");
+            Console.Write("Enter first value: ");
+            double val1 = GetDoubleInput();
+            LengthUnit unit1 = GetUnitInput();
+
+            Console.Write("Enter second value: ");
+            double val2 = GetDoubleInput();
+            LengthUnit unit2 = GetUnitInput();
+
+            QuantityLength q1 = new QuantityLength(val1, unit1);
+            QuantityLength q2 = new QuantityLength(val2, unit2);
+
+            try
+            {
+                QuantityLength sum = service.Add(q1, q2);
+                Console.WriteLine($"Sum: {sum.Value} {sum.Unit}");
             }
             catch (Exception ex)
             {
