@@ -59,8 +59,8 @@ namespace QuantityMeasurementApp.Tests
             var q1 = new Quantity<LengthUnit>(10, LengthUnit.FEET);
             var q2 = new Quantity<WeightUnit>(5, WeightUnit.GRAM);
 
-            Assert.Throws<ArgumentException>(() => q1.Add(q2 as dynamic));
-            Assert.Throws<ArgumentException>(() => q1.Subtract(q2 as dynamic));
+            Assert.Throws<Microsoft.CSharp.RuntimeBinder.RuntimeBinderException>(() => q1.Add(q2 as dynamic));
+            Assert.Throws<Microsoft.CSharp.RuntimeBinder.RuntimeBinderException>(() => q1.Subtract(q2 as dynamic));
         }
 
         [Test]

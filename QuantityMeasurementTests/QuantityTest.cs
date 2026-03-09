@@ -1,6 +1,5 @@
 using NUnit.Framework;
 using QuantityMeasurementApp.Model;
-using QuantityMeasurementApp.Unit;
 using System;
 
 namespace QuantityMeasurementApp.Tests
@@ -103,7 +102,7 @@ namespace QuantityMeasurementApp.Tests
         [Test]
         public void testGenericQuantity_ConstructorValidation_NullUnit()
         {
-            Assert.Throws<ArgumentException>(() => new Quantity<LengthUnit>(1.0, null));
+            Assert.Throws<ArgumentException>(() => new Quantity<LengthUnit>(1.0, (LengthUnit)999));
         }
 
         [Test]

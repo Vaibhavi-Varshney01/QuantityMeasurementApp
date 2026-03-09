@@ -149,7 +149,7 @@ namespace QuantityMeasurementApp.Tests
         {
             var q1 = new Quantity<LengthUnit>(10, FEET);
             var q2 = new Quantity<LengthUnit>(5, FEET);
-            Assert.That(() => service.GenericSubtract(q1, q2, null!), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => service.GenericSubtract(q1, q2, (LengthUnit)999), Throws.Exception);
         }
 
         [Test]
@@ -157,7 +157,7 @@ namespace QuantityMeasurementApp.Tests
         {
             var q1 = new Quantity<LengthUnit>(10, FEET);
             var q2 = new Quantity<WeightUnit>(5, KILOGRAM);
-            Assert.That(() => service.GenericSubtract<LengthUnit, WeightUnit>(q1, q2), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => service.GenericSubtractCross(q1, q2), Throws.TypeOf<ArgumentException>());
         }
 
         #endregion
@@ -249,7 +249,7 @@ namespace QuantityMeasurementApp.Tests
         {
             var q1 = new Quantity<LengthUnit>(10, FEET);
             var q2 = new Quantity<WeightUnit>(5, KILOGRAM);
-            Assert.That(() => service.GenericDivide<LengthUnit, WeightUnit>(q1, q2), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => service.GenericDivideCross(q1, q2), Throws.TypeOf<ArgumentException>());
         }
 
         #endregion

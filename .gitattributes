@@ -1,0 +1,9 @@
+# Handle line endings automatically for all files
+* text=auto
+
+# Force C# files to use LF internally, but checkout according to OS
+*.cs text eol=lf
+
+# Optional: bin/obj folders ko ignore karna
+bin/* -text
+obj/* -text

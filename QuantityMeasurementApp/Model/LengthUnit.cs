@@ -1,35 +1,60 @@
-using QuantityMeasurementApp.Unit;
+using System;
 
-namespace QuantityMeasurementApp.Unit
+namespace QuantityMeasurementApp.Model
 {
-    public enum LengthUnit : int
+    public enum LengthUnit
     {
-        FEET = 1,
-        INCHES = 12,
-        YARDS = 36,
-        CENTIMETERS = 30 // just example factor to inches
+        Inch = 1,
+        INCHES = Inch,
+        Feet = 2,
+        FEET = Feet,
+        Yard = 3,
+        YARD = Yard,
+        Cm = 4,
+        CENTIMETERS = Cm
     }
 
     public static class LengthUnitExtensions
     {
-        public static double GetConversionFactor(this LengthUnit unit)
+        private static readonly SupportsArithmetic SupportsArithmetic = () => true;
+
+        public static double ConvertToBaseUnit(this LengthUnit unit, double value)
         {
             return unit switch
             {
-                LengthUnit.FEET => 12.0,
-                LengthUnit.INCHES => 1.0,
-                LengthUnit.YARDS => 36.0,
-                LengthUnit.CENTIMETERS => 0.393701,
-                _ => throw new ArgumentException("Unknown LengthUnit")
+                LengthUnit.Feet => value,
+                LengthUnit.Inch => value / 12.0,
+                LengthUnit.Yard => value * 3.0,
+                LengthUnit.Cm => value / 30.48,
+                _ => throw new ArgumentException("Invalid LengthUnit")
             };
         }
 
-        public static double ConvertToBaseUnit(this LengthUnit unit, double value)
-            => value * unit.GetConversionFactor();
-
         public static double ConvertFromBaseUnit(this LengthUnit unit, double baseValue)
-            => baseValue / unit.GetConversionFactor();
+        {
+            return unit switch
+            {
+                LengthUnit.Feet => baseValue,
+                LengthUnit.Inch => baseValue * 12.0,
+                LengthUnit.Yard => baseValue / 3.0,
+                LengthUnit.Cm => baseValue * 30.48,
+                _ => throw new ArgumentException("Invalid LengthUnit")
+            };
+        }
 
-        public static string GetUnitName(this LengthUnit unit) => unit.ToString();
+        public static string GetUnitName(this LengthUnit unit)
+        {
+            return unit.ToString().ToUpperInvariant();
+        }
+
+        public static bool SupportsArithmeticOperation(this LengthUnit unit)
+        {
+            return SupportsArithmetic();
+        }
+
+        public static void ValidateOperationSupport(this LengthUnit unit, ArithmeticOperation operation)
+        {
+            // Length supports all arithmetic operations.
+        }
     }
 }

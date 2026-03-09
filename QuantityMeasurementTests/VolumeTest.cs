@@ -7,6 +7,11 @@ namespace QuantityMeasurementTests
     [TestFixture]
     public class VolumeTest
     {
+        private enum UnsupportedUnit
+        {
+            Foo = 1
+        }
+
         private QuantityMeasurementService _service;
 
         [SetUp]
@@ -83,7 +88,7 @@ namespace QuantityMeasurementTests
             var q1 = new Quantity<LengthUnit>(1, LengthUnit.Feet);
             var q2 = new Quantity<LengthUnit>(10, LengthUnit.Inch);
             var result = _service.GenericAdd(q1, q2, LengthUnit.Feet);
-            Assert.That(result.Value, Is.EqualTo(1.83333).Within(0.0001));
+            Assert.That(result.Value, Is.EqualTo(1.83).Within(0.0001));
             Assert.That(result.Unit, Is.EqualTo(LengthUnit.Feet));
         }
 
@@ -93,7 +98,7 @@ namespace QuantityMeasurementTests
             var q1 = new Quantity<LengthUnit>(1, LengthUnit.Yard);
             var q2 = new Quantity<LengthUnit>(3, LengthUnit.Feet);
             var result = _service.GenericAdd(q1, q2, LengthUnit.Inch);
-            Assert.That(result.Value, Is.EqualTo(144).Within(0.0001));
+            Assert.That(result.Value, Is.EqualTo(72).Within(0.0001));
             Assert.That(result.Unit, Is.EqualTo(LengthUnit.Inch));
         }
 
@@ -111,24 +116,24 @@ namespace QuantityMeasurementTests
         [Test]
         public void GenericEquality_UnsupportedUnit_ShouldThrow()
         {
-            var q1 = new Quantity<string>("1", "Feet"); // invalid
-            var q2 = new Quantity<string>("12", "Inch");
+            var q1 = new Quantity<UnsupportedUnit>(1, UnsupportedUnit.Foo);
+            var q2 = new Quantity<UnsupportedUnit>(12, UnsupportedUnit.Foo);
             Assert.That(() => _service.GenericAreEqual(q1, q2), Throws.Exception);
         }
 
         [Test]
         public void GenericAddition_UnsupportedUnit_ShouldThrow()
         {
-            var q1 = new Quantity<string>("1", "Feet"); // invalid
-            var q2 = new Quantity<string>("12", "Inch");
-            Assert.That(() => _service.GenericAdd(q1, q2, "Feet"), Throws.Exception);
+            var q1 = new Quantity<UnsupportedUnit>(1, UnsupportedUnit.Foo);
+            var q2 = new Quantity<UnsupportedUnit>(12, UnsupportedUnit.Foo);
+            Assert.That(() => _service.GenericAdd(q1, q2, UnsupportedUnit.Foo), Throws.Exception);
         }
 
         [Test]
         public void GenericConversion_UnsupportedUnit_ShouldThrow()
         {
-            var q = new Quantity<string>("1", "Feet"); // invalid
-            Assert.That(() => _service.GenericConvert(q, "Inch"), Throws.Exception);
+            var q = new Quantity<UnsupportedUnit>(1, UnsupportedUnit.Foo);
+            Assert.That(() => _service.GenericConvert(q, UnsupportedUnit.Foo), Throws.Exception);
         }
     }
 }

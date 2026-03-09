@@ -13,7 +13,7 @@ namespace QuantityMeasurementApp
 
             while (!exit)
             {
-                Console.WriteLine("\n===== Quantity Measurement Menu (UC1 - UC13) =====");
+                Console.WriteLine("\n===== Quantity Measurement Menu (UC1 - UC14) =====");
                 Console.WriteLine("1. Compare Lengths (Feet/Inch/Yard/Cm)");
                 Console.WriteLine("2. Convert Length Units");
                 Console.WriteLine("3. Add Lengths");
@@ -26,7 +26,10 @@ namespace QuantityMeasurementApp
                 Console.WriteLine("10. Add Weight");
                 Console.WriteLine("11. Subtract Weight");
                 Console.WriteLine("12. Divide Weight");
-                Console.WriteLine("13. Exit");
+                Console.WriteLine("13. Compare Temperature");
+                Console.WriteLine("14. Convert Temperature");
+                Console.WriteLine("15. Demo Unsupported Temperature Arithmetic");
+                Console.WriteLine("16. Exit");
 
                 Console.Write("Enter choice: ");
                 string choice = Console.ReadLine()!;
@@ -77,7 +80,7 @@ namespace QuantityMeasurementApp
                             Console.Write("Enter second unit: ");
                             LengthUnit au2 = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
 
-                            var addRes = service.GenericAdd(
+                            var addRes = service.GenericAdd<LengthUnit>(
                                 new Quantity<LengthUnit>(a1, au1),
                                 new Quantity<LengthUnit>(a2, au2)
                             );
@@ -97,7 +100,7 @@ namespace QuantityMeasurementApp
                             Console.Write("Enter target unit: ");
                             LengthUnit target = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
 
-                            var addTarget = service.GenericAdd(
+                            var addTarget = service.GenericAdd<LengthUnit>(
                                 new Quantity<LengthUnit>(b1, bu1),
                                 new Quantity<LengthUnit>(b2, bu2),
                                 target
@@ -116,7 +119,7 @@ namespace QuantityMeasurementApp
                             Console.Write("Enter second unit: ");
                             LengthUnit su2 = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
 
-                            var subRes = service.GenericSubtract(
+                            var subRes = service.GenericSubtract<LengthUnit>(
                                 new Quantity<LengthUnit>(s1, su1),
                                 new Quantity<LengthUnit>(s2, su2)
                             );
@@ -136,7 +139,7 @@ namespace QuantityMeasurementApp
                             Console.Write("Enter target unit: ");
                             LengthUnit subTarget = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
 
-                            var subResTarget = service.GenericSubtract(
+                            var subResTarget = service.GenericSubtract<LengthUnit>(
                                 new Quantity<LengthUnit>(s3, su3),
                                 new Quantity<LengthUnit>(s4, su4),
                                 subTarget
@@ -155,7 +158,7 @@ namespace QuantityMeasurementApp
                             Console.Write("Enter second unit: ");
                             LengthUnit du2 = Enum.Parse<LengthUnit>(Console.ReadLine()!, true);
 
-                            var divRes = service.GenericDivide(
+                            var divRes = service.GenericDivide<LengthUnit>(
                                 new Quantity<LengthUnit>(d1, du1),
                                 new Quantity<LengthUnit>(d2, du2)
                             );
@@ -172,6 +175,73 @@ namespace QuantityMeasurementApp
                             break;
 
                         case "13":
+                            Console.Write("Enter first temperature value: ");
+                            double t1 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter first unit (Celsius/Fahrenheit/Kelvin): ");
+                            TemperatureUnit tu1 = Enum.Parse<TemperatureUnit>(Console.ReadLine()!, true);
+
+                            Console.Write("Enter second temperature value: ");
+                            double t2 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter second unit (Celsius/Fahrenheit/Kelvin): ");
+                            TemperatureUnit tu2 = Enum.Parse<TemperatureUnit>(Console.ReadLine()!, true);
+
+                            var tq1 = new Quantity<TemperatureUnit>(t1, tu1);
+                            var tq2 = new Quantity<TemperatureUnit>(t2, tu2);
+                            Console.WriteLine("Equal: " + service.GenericAreEqual(tq1, tq2));
+                            break;
+
+                        case "14":
+                            Console.Write("Enter temperature value: ");
+                            double tv = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter source unit (Celsius/Fahrenheit/Kelvin): ");
+                            TemperatureUnit ts = Enum.Parse<TemperatureUnit>(Console.ReadLine()!, true);
+                            Console.Write("Enter target unit (Celsius/Fahrenheit/Kelvin): ");
+                            TemperatureUnit tt = Enum.Parse<TemperatureUnit>(Console.ReadLine()!, true);
+
+                            var tconv = service.GenericConvert(new Quantity<TemperatureUnit>(tv, ts), tt);
+                            Console.WriteLine($"Converted: {tconv.Value} {tconv.Unit}");
+                            break;
+
+                        case "15":
+                            Console.Write("Enter first temperature value: ");
+                            double ta1 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter second temperature value: ");
+                            double ta2 = double.Parse(Console.ReadLine()!);
+                            Console.Write("Enter unit (Celsius/Fahrenheit/Kelvin): ");
+                            TemperatureUnit tau = Enum.Parse<TemperatureUnit>(Console.ReadLine()!, true);
+
+                            var taq1 = new Quantity<TemperatureUnit>(ta1, tau);
+                            var taq2 = new Quantity<TemperatureUnit>(ta2, tau);
+
+                            try
+                            {
+                                service.GenericAdd(taq1, taq2);
+                            }
+                            catch (NotSupportedException nse)
+                            {
+                                Console.WriteLine("Add: " + nse.Message);
+                            }
+
+                            try
+                            {
+                                service.GenericSubtract(taq1, taq2);
+                            }
+                            catch (NotSupportedException nse)
+                            {
+                                Console.WriteLine("Subtract: " + nse.Message);
+                            }
+
+                            try
+                            {
+                                service.GenericDivide(taq1, taq2);
+                            }
+                            catch (NotSupportedException nse)
+                            {
+                                Console.WriteLine("Divide: " + nse.Message);
+                            }
+                            break;
+
+                        case "16":
                             exit = true;
                             Console.WriteLine("Exiting program...");
                             break;
