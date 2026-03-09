@@ -1,8 +1,25 @@
+# Build outputs
 bin/
 obj/
+
+# Test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# User/IDE files
+.vs/
+.vscode/
 *.user
 *.suo
-*.vscode/
+*.userosscache
+*.sln.docstates
+
+# OS files
 *.DS_Store
+Thumbs.db
+
+# Logs and diagnostics
 *.log
 *.pdb
