@@ -1,25 +1,57 @@
 # Build outputs
-bin/
-obj/
+/bin/
+/obj/
+/out/
+*.exe
+*.dll
+*.app
+*.pdb
+*.mdb
 
-# Test results
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+artifacts/
+project.lock.json
+project.fragment.lock.json
+*.nuget.props
+*.nuget.targets
+
+# Test results & coverage
 TestResults/
 *.trx
 *.coverage
 *.coveragexml
+coverage*/
+coverage*.xml
 
 # User/IDE files
 .vs/
 .vscode/
 *.user
 *.suo
+*.userprefs
 *.userosscache
 *.sln.docstates
+*.sln.iml
+
+# Rider / ReSharper
+.idea/
+_ReSharper*/
+*.DotSettings.user
+
+# Configuration secrets
+appsettings.*.local.json
+appsettings.Development.json
+*.env
+
+# Logs and diagnostics
+*.log
 
 # OS files
 *.DS_Store
 Thumbs.db
 
-# Logs and diagnostics
-*.log
-*.pdb
+# Self-contained publish artifacts
+/publish/

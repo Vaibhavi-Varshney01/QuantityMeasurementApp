@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "QuantityMeasurementRepository/1.0.0": {
+        "dependencies": {
+          "QuantityMeasurementModel": "1.0.0"
+        },
+        "runtime": {
+          "QuantityMeasurementRepository.dll": {}
+        }
+      },
+      "QuantityMeasurementModel/1.0.0": {
+        "runtime": {
+          "QuantityMeasurementModel.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "QuantityMeasurementRepository/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "QuantityMeasurementModel/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

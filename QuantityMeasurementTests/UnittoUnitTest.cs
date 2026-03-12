@@ -1,6 +1,6 @@
 using NUnit.Framework;
-using QuantityMeasurementApp.Model;
-using QuantityMeasurementApp.Service;
+using QuantityMeasurementModel.Models;
+using QuantityMeasurementRepository;
 using System;
 
 namespace QuantityMeasurementTests

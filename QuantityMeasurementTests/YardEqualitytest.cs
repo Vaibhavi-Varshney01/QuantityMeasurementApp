@@ -1,155 +1,77 @@
 using NUnit.Framework;
-using QuantityMeasurementApp.Model;
-using QuantityMeasurementApp.Service;
+using QuantityMeasurementModel.Models;
 
-namespace QuantityMeasurementTests
+namespace QuantityMeasurementApp.Tests
 {
     [TestFixture]
-    public class QuantityMeasurementTestsUC4
+    public class ExtendLengthEqualityTest
     {
-        private QuantityMeasurementService service;
 
-        [SetUp]
-        public void Setup()
-        {
-            service = new QuantityMeasurementService();
-        }
-
-        // ===== UC4: Yard-to-Yard =====
         [Test]
-        public void TestEquality_YardToYard_SameValue()
+        public void yardEquals36Inches()
         {
-            QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Yard);
-            QuantityLength q2 = new QuantityLength(1.0, LengthUnit.Yard);
-            Assert.That(service.AreEqual(q1, q2), Is.True);
+            var yard = new Length(1, LengthUnit.Yards);
+            var inches = new Length(36, LengthUnit.Inch);
+
+            Assert.That(yard.Equals(inches), Is.True);
         }
 
         [Test]
-        public void TestEquality_YardToYard_DifferentValue()
+        public void centimeterEquals39Point3701Inches()
         {
-            QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Yard);
-            QuantityLength q2 = new QuantityLength(2.0, LengthUnit.Yard);
-            Assert.That(service.AreEqual(q1, q2), Is.False);
-        }
-
-        // ===== UC4: Yard to Feet/Inches =====
-        [Test]
-        public void TestEquality_YardToFeet_EquivalentValue()
-        {
-            QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Yard);
-            QuantityLength q2 = new QuantityLength(3.0, LengthUnit.Feet);
-            Assert.That(service.AreEqual(q1, q2), Is.True);
+            var cm = new Length(100, LengthUnit.Cm);
+            var inches = new Length(39.3701, LengthUnit.Inch);
+            Assert.That(cm.Equals(inches), Is.True);
         }
 
         [Test]
-        public void TestEquality_FeetToYard_EquivalentValue()
+        public void threeFeetEqualsOneYard()
         {
-            QuantityLength q1 = new QuantityLength(3.0, LengthUnit.Feet);
-            QuantityLength q2 = new QuantityLength(1.0, LengthUnit.Yard);
-            Assert.That(service.AreEqual(q1, q2), Is.True);
+            var feet = new Length(3, LengthUnit.Feet);
+            var yard = new Length(1, LengthUnit.Yards);
+            Assert.That(feet.Equals(yard), Is.True);
         }
 
         [Test]
-        public void TestEquality_YardToInches_EquivalentValue()
+        public void thirtyPoint48CmEqualsOneFoot()
         {
-            QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Yard);
-            QuantityLength q2 = new QuantityLength(36.0, LengthUnit.Inch);
-            Assert.That(service.AreEqual(q1, q2), Is.True);
+            var cm = new Length(30.48, LengthUnit.Cm);
+            var foot = new Length(1, LengthUnit.Feet);
+            Assert.That(cm.Equals(foot), Is.True);
         }
 
         [Test]
-        public void TestEquality_InchesToYard_EquivalentValue()
+        public void yardNotEqualToInches()
         {
-            QuantityLength q1 = new QuantityLength(36.0, LengthUnit.Inch);
-            QuantityLength q2 = new QuantityLength(1.0, LengthUnit.Yard);
-            Assert.That(service.AreEqual(q1, q2), Is.True);
+            var yard = new Length(1, LengthUnit.Yards);
+            var inch = new Length(20, LengthUnit.Inch);
+            Assert.That(yard.Equals(inch), Is.False);
         }
 
         [Test]
-        public void TestEquality_YardToFeet_NonEquivalentValue()
+        public void referenceEqualitySameObject()
         {
-            QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Yard);
-            QuantityLength q2 = new QuantityLength(2.0, LengthUnit.Feet);
-            Assert.That(service.AreEqual(q1, q2), Is.False);
-        }
-
-        // ===== UC4: Centimeters =====
-        [Test]
-        public void TestEquality_CentimetersToInches_EquivalentValue()
-        {
-            QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Cm);
-            QuantityLength q2 = new QuantityLength(0.393701, LengthUnit.Inch);
-            Assert.That(service.AreEqual(q1, q2), Is.True);
+            var yard = new Length(1, LengthUnit.Yards);
+            Assert.That(yard.Equals(yard), Is.True);
         }
 
         [Test]
-        public void TestEquality_CentimetersToFeet_NonEquivalentValue()
+        public void equalsReturnsFalseForNull()
         {
-            QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Cm);
-            QuantityLength q2 = new QuantityLength(1.0, LengthUnit.Feet);
-            Assert.That(service.AreEqual(q1, q2), Is.False);
+            var yard = new Length(1, LengthUnit.Yards);
+            Assert.That(yard.Equals(null), Is.False);
         }
 
         [Test]
-        public void TestEquality_CentimetersToCentimeters_SameValue()
+        public void reflexiveSymmetricAndTransitiveProperty()
         {
-            QuantityLength q1 = new QuantityLength(2.0, LengthUnit.Cm);
-            QuantityLength q2 = new QuantityLength(2.0, LengthUnit.Cm);
-            Assert.That(service.AreEqual(q1, q2), Is.True);
+            var yard = new Length(1, LengthUnit.Yards);
+            var feet = new Length(3, LengthUnit.Feet);
+            var inches = new Length(36, LengthUnit.Inch);
+            Assert.That(yard.Equals(feet), Is.True);
+            Assert.That(feet.Equals(inches), Is.True);
+            Assert.That(yard.Equals(inches), Is.True);
         }
 
-        [Test]
-        public void TestEquality_CentimetersToCentimeters_DifferentValue()
-        {
-            QuantityLength q1 = new QuantityLength(2.0, LengthUnit.Cm);
-            QuantityLength q2 = new QuantityLength(3.0, LengthUnit.Cm);
-            Assert.That(service.AreEqual(q1, q2), Is.False);
-        }
-
-        // ===== UC4: Multi-unit transitive property =====
-        [Test]
-        public void TestEquality_MultiUnit_TransitiveProperty()
-        {
-            QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Yard);
-            QuantityLength q2 = new QuantityLength(3.0, LengthUnit.Feet);
-            QuantityLength q3 = new QuantityLength(36.0, LengthUnit.Inch);
-
-            Assert.That(service.AreEqual(q1, q2), Is.True);
-            Assert.That(service.AreEqual(q2, q3), Is.True);
-            Assert.That(service.AreEqual(q1, q3), Is.True);
-        }
-
-        // ===== UC4: Null and same reference checks =====
-        [Test]
-        public void TestEquality_YardSameReference()
-        {
-            QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Yard);
-            QuantityLength q2 = q1;
-            Assert.That(service.AreEqual(q1, q2), Is.True);
-        }
-
-        [Test]
-        public void TestEquality_YardNullComparison()
-        {
-            QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Yard);
-            QuantityLength? q2 = null;
-            Assert.That(service.AreEqual(q1, q2!), Is.False);
-        }
-
-        [Test]
-        public void TestEquality_CentimetersSameReference()
-        {
-            QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Cm);
-            QuantityLength q2 = q1;
-            Assert.That(service.AreEqual(q1, q2), Is.True);
-        }
-
-        [Test]
-        public void TestEquality_CentimetersNullComparison()
-        {
-            QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Cm);
-            QuantityLength? q2 = null;
-            Assert.That(service.AreEqual(q1, q2!), Is.False);
-        }
     }
 }

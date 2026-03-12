@@ -1,6 +1,6 @@
 using NUnit.Framework;
-using QuantityMeasurementApp.Model;
-using QuantityMeasurementApp.Service;
+using QuantityMeasurementModel.Models;
+using QuantityMeasurementRepository;
 
 namespace QuantityMeasurementTests.UC7
 {
@@ -19,8 +19,8 @@ namespace QuantityMeasurementTests.UC7
         [Test]
         public void Given1FeetAnd1Feet_WhenAdded_Result2Feet()
         {
-            var q1 = new QuantityLength(1, LengthUnit.Feet);
-            var q2 = new QuantityLength(1, LengthUnit.Feet);
+            var q1 = new Quantity<LengthUnit>(1, LengthUnit.Feet);
+            var q2 = new Quantity<LengthUnit>(1, LengthUnit.Feet);
 
             var result = service.Add(q1, q2, LengthUnit.Feet);
 
@@ -31,8 +31,8 @@ namespace QuantityMeasurementTests.UC7
         [Test]
         public void Given1FeetAnd12Inch_WhenAdded_Result2Feet()
         {
-            var q1 = new QuantityLength(1, LengthUnit.Feet);
-            var q2 = new QuantityLength(12, LengthUnit.Inch);
+            var q1 = new Quantity<LengthUnit>(1, LengthUnit.Feet);
+            var q2 = new Quantity<LengthUnit>(12, LengthUnit.Inch);
 
             var result = service.Add(q1, q2, LengthUnit.Feet);
 
@@ -43,8 +43,8 @@ namespace QuantityMeasurementTests.UC7
         [Test]
         public void Given1FeetAnd12Inch_WhenAdded_Result24Inch()
         {
-            var q1 = new QuantityLength(1, LengthUnit.Feet);
-            var q2 = new QuantityLength(12, LengthUnit.Inch);
+            var q1 = new Quantity<LengthUnit>(1, LengthUnit.Feet);
+            var q2 = new Quantity<LengthUnit>(12, LengthUnit.Inch);
 
             var result = service.Add(q1, q2, LengthUnit.Inch);
 
@@ -55,8 +55,8 @@ namespace QuantityMeasurementTests.UC7
         [Test]
         public void Given2InchAnd2Inch_WhenAdded_Result4Inch()
         {
-            var q1 = new QuantityLength(2, LengthUnit.Inch);
-            var q2 = new QuantityLength(2, LengthUnit.Inch);
+            var q1 = new Quantity<LengthUnit>(2, LengthUnit.Inch);
+            var q2 = new Quantity<LengthUnit>(2, LengthUnit.Inch);
 
             var result = service.Add(q1, q2, LengthUnit.Inch);
 
@@ -67,8 +67,8 @@ namespace QuantityMeasurementTests.UC7
         [Test]
         public void Given3FeetAnd2Feet_WhenAdded_Result5Feet()
         {
-            var q1 = new QuantityLength(3, LengthUnit.Feet);
-            var q2 = new QuantityLength(2, LengthUnit.Feet);
+            var q1 = new Quantity<LengthUnit>(3, LengthUnit.Feet);
+            var q2 = new Quantity<LengthUnit>(2, LengthUnit.Feet);
 
             var result = service.Add(q1, q2, LengthUnit.Feet);
 
@@ -79,8 +79,8 @@ namespace QuantityMeasurementTests.UC7
         [Test]
         public void Given1FeetAnd1Feet_WhenAdded_Result0_667Yard()
         {
-            var q1 = new QuantityLength(1, LengthUnit.Feet);
-            var q2 = new QuantityLength(1, LengthUnit.Feet);
+            var q1 = new Quantity<LengthUnit>(1, LengthUnit.Feet);
+            var q2 = new Quantity<LengthUnit>(1, LengthUnit.Feet);
 
             var result = service.Add(q1, q2, LengthUnit.Yard);
 
@@ -91,8 +91,8 @@ namespace QuantityMeasurementTests.UC7
         [Test]
         public void Given1InchAnd1Inch_WhenAdded_Result5_08Cm()
         {
-            var q1 = new QuantityLength(1, LengthUnit.Inch);
-            var q2 = new QuantityLength(1, LengthUnit.Inch);
+            var q1 = new Quantity<LengthUnit>(1, LengthUnit.Inch);
+            var q2 = new Quantity<LengthUnit>(1, LengthUnit.Inch);
 
             var result = service.Add(q1, q2, LengthUnit.Cm);
 
@@ -103,8 +103,8 @@ namespace QuantityMeasurementTests.UC7
         [Test]
         public void GivenZeroValue_WhenAdded_ResultSameValue()
         {
-            var q1 = new QuantityLength(5, LengthUnit.Feet);
-            var q2 = new QuantityLength(0, LengthUnit.Feet);
+            var q1 = new Quantity<LengthUnit>(5, LengthUnit.Feet);
+            var q2 = new Quantity<LengthUnit>(0, LengthUnit.Feet);
 
             var result = service.Add(q1, q2, LengthUnit.Feet);
 
@@ -115,8 +115,8 @@ namespace QuantityMeasurementTests.UC7
         [Test]
         public void GivenNegativeValue_WhenAdded_ResultCorrect()
         {
-            var q1 = new QuantityLength(5, LengthUnit.Feet);
-            var q2 = new QuantityLength(-2, LengthUnit.Feet);
+            var q1 = new Quantity<LengthUnit>(5, LengthUnit.Feet);
+            var q2 = new Quantity<LengthUnit>(-2, LengthUnit.Feet);
 
             var result = service.Add(q1, q2, LengthUnit.Feet);
 
@@ -127,8 +127,8 @@ namespace QuantityMeasurementTests.UC7
         [Test]
         public void Addition_ShouldBeCommutative()
         {
-            var q1 = new QuantityLength(1, LengthUnit.Feet);
-            var q2 = new QuantityLength(12, LengthUnit.Inch);
+            var q1 = new Quantity<LengthUnit>(1, LengthUnit.Feet);
+            var q2 = new Quantity<LengthUnit>(12, LengthUnit.Inch);
 
             var result1 = service.Add(q1, q2, LengthUnit.Feet);
             var result2 = service.Add(q2, q1, LengthUnit.Feet);
@@ -140,8 +140,8 @@ namespace QuantityMeasurementTests.UC7
         [Test]
         public void GivenLargeValues_WhenAdded_ResultCorrect()
         {
-            var q1 = new QuantityLength(100, LengthUnit.Feet);
-            var q2 = new QuantityLength(200, LengthUnit.Feet);
+            var q1 = new Quantity<LengthUnit>(100, LengthUnit.Feet);
+            var q2 = new Quantity<LengthUnit>(200, LengthUnit.Feet);
 
             var result = service.Add(q1, q2, LengthUnit.Feet);
 
@@ -152,8 +152,8 @@ namespace QuantityMeasurementTests.UC7
         [Test]
         public void ResultUnit_ShouldMatchTargetUnit()
         {
-            var q1 = new QuantityLength(1, LengthUnit.Feet);
-            var q2 = new QuantityLength(12, LengthUnit.Inch);
+            var q1 = new Quantity<LengthUnit>(1, LengthUnit.Feet);
+            var q2 = new Quantity<LengthUnit>(12, LengthUnit.Inch);
 
             var result = service.Add(q1, q2, LengthUnit.Yard);
 

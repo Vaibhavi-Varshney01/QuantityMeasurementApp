@@ -1,148 +1,264 @@
 using NUnit.Framework;
-using QuantityMeasurementApp.Model;
+using QuantityMeasurementModel.Models;
 
-namespace QuantityMeasurementTests
+namespace QuantityMeasurementApp.Tests
 {
     [TestFixture]
     public class WeightMeasurementTests
     {
+        private const double EPSILON = 0.0001;
 
-        // ---------------------------
-        // Equality Test Cases
-        // ---------------------------
+        // ---------------- Equality Tests ----------------
 
         [Test]
-        public void GivenSameKilogramValues_WhenCompared_ShouldReturnTrue()
+        public void testEquality_KilogramToKilogram_SameValue()
         {
-            var w1 = new QuantityWeight(1.0, WeightUnit.Kilogram);
-            var w2 = new QuantityWeight(1.0, WeightUnit.Kilogram);
+            var w1 = new Weight(1.0, WeightUnit.Kilogram);
+            var w2 = new Weight(1.0, WeightUnit.Kilogram);
 
             Assert.That(w1.Equals(w2), Is.True);
         }
 
         [Test]
-        public void GivenDifferentKilogramValues_WhenCompared_ShouldReturnFalse()
+        public void testEquality_KilogramToKilogram_DifferentValue()
         {
-            var w1 = new QuantityWeight(1.0, WeightUnit.Kilogram);
-            var w2 = new QuantityWeight(2.0, WeightUnit.Kilogram);
+            var w1 = new Weight(1.0, WeightUnit.Kilogram);
+            var w2 = new Weight(2.0, WeightUnit.Kilogram);
 
             Assert.That(w1.Equals(w2), Is.False);
         }
 
         [Test]
-        public void GivenKilogramAndGram_WhenCompared_ShouldReturnTrue()
+        public void testEquality_KilogramToGram_EquivalentValue()
         {
-            var w1 = new QuantityWeight(1.0, WeightUnit.Kilogram);
-            var w2 = new QuantityWeight(1000.0, WeightUnit.Gram);
+            var w1 = new Weight(1.0, WeightUnit.Kilogram);
+            var w2 = new Weight(1000.0, WeightUnit.Gram);
 
             Assert.That(w1.Equals(w2), Is.True);
         }
 
         [Test]
-        public void GivenKilogramAndPound_WhenCompared_ShouldReturnTrue()
+        public void testEquality_GramToKilogram_EquivalentValue()
         {
-            var w1 = new QuantityWeight(1.0, WeightUnit.Kilogram);
-            var w2 = new QuantityWeight(2.20462, WeightUnit.Pound);
+            var w1 = new Weight(1000.0, WeightUnit.Gram);
+            var w2 = new Weight(1.0, WeightUnit.Kilogram);
 
             Assert.That(w1.Equals(w2), Is.True);
         }
 
-
-        // ---------------------------
-        // Conversion Test Cases
-        // ---------------------------
-
         [Test]
-        public void GivenKilogram_WhenConvertedToGram_ShouldReturn1000()
+        public void testEquality_WeightVsLength_Incompatible()
         {
-            var weight = new QuantityWeight(1.0, WeightUnit.Kilogram);
+            var weight = new Weight(1.0, WeightUnit.Kilogram);
+            var length = new Length(1.0, LengthUnit.Feet);
 
-            var result = weight.ConvertTo(WeightUnit.Gram);
-
-            Assert.That(result.Value, Is.EqualTo(1000).Within(0.01));
+            Assert.That(weight.Equals(length), Is.False);
         }
 
         [Test]
-        public void GivenGram_WhenConvertedToKilogram_ShouldReturn1()
+        public void testEquality_NullComparison()
         {
-            var weight = new QuantityWeight(1000, WeightUnit.Gram);
+            var weight = new Weight(1.0, WeightUnit.Kilogram);
 
-            var result = weight.ConvertTo(WeightUnit.Kilogram);
-
-            Assert.That(result.Value, Is.EqualTo(1).Within(0.01));
+            Assert.That(weight.Equals(null), Is.False);
         }
 
         [Test]
-        public void GivenPound_WhenConvertedToKilogram_ShouldReturn1()
+        public void testEquality_SameReference()
         {
-            var weight = new QuantityWeight(2.20462, WeightUnit.Pound);
+            var weight = new Weight(1.0, WeightUnit.Kilogram);
 
-            var result = weight.ConvertTo(WeightUnit.Kilogram);
-
-            Assert.That(result.Value, Is.EqualTo(1).Within(0.01));
-        }
-
-
-        // ---------------------------
-        // Addition Test Cases
-        // ---------------------------
-
-        [Test]
-        public void GivenTwoKilograms_WhenAdded_ShouldReturnThreeKilograms()
-        {
-            var w1 = new QuantityWeight(1, WeightUnit.Kilogram);
-            var w2 = new QuantityWeight(2, WeightUnit.Kilogram);
-
-            var result = w1.Add(w2);
-
-            Assert.That(result.Value, Is.EqualTo(3));
+            Assert.That(weight.Equals(weight), Is.True);
         }
 
         [Test]
-        public void GivenKilogramAndGram_WhenAdded_ShouldReturnTwoKilograms()
+        public void testEquality_NullUnit()
         {
-            var w1 = new QuantityWeight(1, WeightUnit.Kilogram);
-            var w2 = new QuantityWeight(1000, WeightUnit.Gram);
+            Assert.Throws<ArgumentException>(() =>
+            {
+                new Weight(1.0, (WeightUnit)(-1));
+            });
+        }
+        [Test]
+        public void testEquality_TransitiveProperty()
+        {
+            var a = new Weight(1.0, WeightUnit.Kilogram);
+            var b = new Weight(1000.0, WeightUnit.Gram);
+            var c = new Weight(1.0, WeightUnit.Kilogram);
 
-            var result = w1.Add(w2);
-
-            Assert.That(result.Value, Is.EqualTo(2).Within(0.01));
+            Assert.That(a.Equals(b), Is.True);
+            Assert.That(b.Equals(c), Is.True);
+            Assert.That(a.Equals(c), Is.True);
         }
 
         [Test]
-        public void GivenWeights_WhenAddedWithTargetUnitGram_ShouldReturn2000Gram()
+        public void testEquality_ZeroValue()
         {
-            var w1 = new QuantityWeight(1, WeightUnit.Kilogram);
-            var w2 = new QuantityWeight(1000, WeightUnit.Gram);
+            var w1 = new Weight(0.0, WeightUnit.Kilogram);
+            var w2 = new Weight(0.0, WeightUnit.Gram);
 
-            var result = w1.Add(w2, WeightUnit.Gram);
-
-            Assert.That(result.Value, Is.EqualTo(2000).Within(0.01));
-        }
-
-
-        // ---------------------------
-        // Edge Case Tests
-        // ---------------------------
-
-        [Test]
-        public void GivenWeightAndZero_WhenAdded_ShouldReturnSameWeight()
-        {
-            var w1 = new QuantityWeight(5, WeightUnit.Kilogram);
-            var w2 = new QuantityWeight(0, WeightUnit.Gram);
-
-            var result = w1.Add(w2);
-
-            Assert.That(result.Value, Is.EqualTo(5).Within(0.01));
+            Assert.That(w1.Equals(w2), Is.True);
         }
 
         [Test]
-        public void GivenNullWeight_WhenCompared_ShouldReturnFalse()
+        public void testEquality_NegativeWeight()
         {
-            QuantityWeight w1 = null;
-            var w2 = new QuantityWeight(1, WeightUnit.Kilogram);
+            var w1 = new Weight(-1.0, WeightUnit.Kilogram);
+            var w2 = new Weight(-1000.0, WeightUnit.Gram);
 
-            Assert.That(w1 == null);
+            Assert.That(w1.Equals(w2), Is.True);
+        }
+
+        [Test]
+        public void testEquality_LargeWeightValue()
+        {
+            var w1 = new Weight(1000000.0, WeightUnit.Gram);
+            var w2 = new Weight(1000.0, WeightUnit.Kilogram);
+
+            Assert.That(w1.Equals(w2), Is.True);
+        }
+
+        [Test]
+        public void testEquality_SmallWeightValue()
+        {
+            var w1 = new Weight(0.001, WeightUnit.Kilogram);
+            var w2 = new Weight(1.0, WeightUnit.Gram);
+
+            Assert.That(w1.Equals(w2), Is.True);
+        }
+
+        // ---------------- Conversion Tests ----------------
+
+        [Test]
+        public void testConversion_PoundToKilogram()
+        {
+            var result = new Weight(2.20462, WeightUnit.Pound)
+                .ConvertTo(WeightUnit.Kilogram);
+
+            Assert.That(result.Value, Is.EqualTo(1.0).Within(EPSILON));
+        }
+
+        [Test]
+        public void testConversion_KilogramToPound()
+        {
+            var result = new Weight(1.0, WeightUnit.Kilogram)
+                .ConvertTo(WeightUnit.Pound);
+
+            Assert.That(result.Value, Is.EqualTo(2.20462).Within(EPSILON));
+        }
+
+        [Test]
+        public void testConversion_SameUnit()
+        {
+            var result = new Weight(5.0, WeightUnit.Kilogram)
+                .ConvertTo(WeightUnit.Kilogram);
+
+            Assert.That(result.Value, Is.EqualTo(5.0));
+        }
+
+        [Test]
+        public void testConversion_ZeroValue()
+        {
+            var result = new Weight(0.0, WeightUnit.Kilogram)
+                .ConvertTo(WeightUnit.Gram);
+
+            Assert.That(result.Value, Is.EqualTo(0.0));
+        }
+
+        [Test]
+        public void testConversion_NegativeValue()
+        {
+            var result = new Weight(-1.0, WeightUnit.Kilogram)
+                .ConvertTo(WeightUnit.Gram);
+
+            Assert.That(result.Value, Is.EqualTo(-1000.0));
+        }
+
+        [Test]
+        public void testConversion_RoundTrip()
+        {
+            var result = new Weight(1.5, WeightUnit.Kilogram)
+                .ConvertTo(WeightUnit.Gram)
+                .ConvertTo(WeightUnit.Kilogram);
+
+            Assert.That(result.Value, Is.EqualTo(1.5).Within(EPSILON));
+        }
+
+        // ---------------- Addition Tests ----------------
+
+        [Test]
+        public void testAddition_SameUnit_KilogramPlusKilogram()
+        {
+            var result = new Weight(1.0, WeightUnit.Kilogram)
+                .Add(new Weight(2.0, WeightUnit.Kilogram));
+
+            Assert.That(result.Value, Is.EqualTo(3.0));
+        }
+
+        [Test]
+        public void testAddition_CrossUnit_KilogramPlusGram()
+        {
+            var result = new Weight(1.0, WeightUnit.Kilogram)
+                .Add(new Weight(1000.0, WeightUnit.Gram));
+
+            Assert.That(result.Value, Is.EqualTo(2.0));
+        }
+
+        [Test]
+        public void testAddition_CrossUnit_PoundPlusKilogram()
+        {
+            var result = new Weight(2.20462, WeightUnit.Pound)
+                .Add(new Weight(1.0, WeightUnit.Kilogram));
+
+            Assert.That(result.Value, Is.EqualTo(4.40924).Within(EPSILON));
+        }
+
+        [Test]
+        public void testAddition_ExplicitTargetUnit_Kilogram()
+        {
+            var result = new Weight(1.0, WeightUnit.Kilogram)
+                .Add(new Weight(1000.0, WeightUnit.Gram), WeightUnit.Gram);
+
+            Assert.That(result.Value, Is.EqualTo(2000.0));
+        }
+
+        [Test]
+        public void testAddition_Commutativity()
+        {
+            var a = new Weight(1.0, WeightUnit.Kilogram)
+                .Add(new Weight(1000.0, WeightUnit.Gram));
+
+            var b = new Weight(1000.0, WeightUnit.Gram)
+                .Add(new Weight(1.0, WeightUnit.Kilogram));
+
+            Assert.That(a.Value, Is.EqualTo(b.ConvertTo(a.Unit).Value).Within(EPSILON));
+        }
+
+        [Test]
+        public void testAddition_WithZero()
+        {
+            var result = new Weight(5.0, WeightUnit.Kilogram)
+                .Add(new Weight(0.0, WeightUnit.Gram));
+
+            Assert.That(result.Value, Is.EqualTo(5.0));
+        }
+
+        [Test]
+        public void testAddition_NegativeValues()
+        {
+            var result = new Weight(5.0, WeightUnit.Kilogram)
+                .Add(new Weight(-2000.0, WeightUnit.Gram));
+
+            Assert.That(result.Value, Is.EqualTo(3.0));
+        }
+
+        [Test]
+        public void testAddition_LargeValues()
+        {
+            var result = new Weight(1e6, WeightUnit.Kilogram)
+                .Add(new Weight(1e6, WeightUnit.Kilogram));
+
+            Assert.That(result.Value, Is.EqualTo(2e6));
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
-using QuantityMeasurementApp.Model;
-using QuantityMeasurementApp.Service;
+using NUnit.Framework;
+using QuantityMeasurementModel.Models;
+using QuantityMeasurementRepository;
 
 namespace QuantityMeasurementTests
 {
@@ -69,8 +69,8 @@ namespace QuantityMeasurementTests
 [Test]
 public void TestEquality_FeetToInch_EquivalentValue()
 {
-    QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Feet);
-    QuantityLength q2 = new QuantityLength(12.0, LengthUnit.Inch);
+    Quantity<LengthUnit> q1 = new Quantity<LengthUnit>(1.0, LengthUnit.Feet);
+    Quantity<LengthUnit> q2 = new Quantity<LengthUnit>(12.0, LengthUnit.Inch);
 
     Assert.That(service.AreEqual(q1, q2), Is.True);
 }
@@ -78,42 +78,42 @@ public void TestEquality_FeetToInch_EquivalentValue()
 [Test]
 public void TestEquality_FeetToInch_DifferentValue()
 {
-    QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Feet);
-    QuantityLength q2 = new QuantityLength(10.0, LengthUnit.Inch);
+    Quantity<LengthUnit> q1 = new Quantity<LengthUnit>(1.0, LengthUnit.Feet);
+    Quantity<LengthUnit> q2 = new Quantity<LengthUnit>(10.0, LengthUnit.Inch);
 
     Assert.That(service.AreEqual(q1, q2), Is.False);
 }
 
-        // ===== UC3: QuantityLength =====
+        // ===== UC3: Generic Quantity =====
         [Test]
-        public void TestEquality_QuantityLength_SameUnit()
+        public void TestEquality_Quantity_SameUnit()
         {
-            QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Feet);
-            QuantityLength q2 = new QuantityLength(1.0, LengthUnit.Feet);
+            var q1 = new Quantity<LengthUnit>(1.0, LengthUnit.Feet);
+            var q2 = new Quantity<LengthUnit>(1.0, LengthUnit.Feet);
             Assert.That(service.AreEqual(q1, q2), Is.True);
         }
 
         [Test]
-        public void TestEquality_QuantityLength_CrossUnit()
+        public void TestEquality_Quantity_CrossUnit()
         {
-            QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Feet);
-            QuantityLength q2 = new QuantityLength(12.0, LengthUnit.Inch);
+            var q1 = new Quantity<LengthUnit>(1.0, LengthUnit.Feet);
+            var q2 = new Quantity<LengthUnit>(12.0, LengthUnit.Inch);
             Assert.That(service.AreEqual(q1, q2), Is.True);
         }
 
         [Test]
-        public void TestEquality_QuantityLength_DifferentValue()
+        public void TestEquality_Quantity_DifferentValue()
         {
-            QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Feet);
-            QuantityLength q2 = new QuantityLength(2.0, LengthUnit.Feet);
+            var q1 = new Quantity<LengthUnit>(1.0, LengthUnit.Feet);
+            var q2 = new Quantity<LengthUnit>(2.0, LengthUnit.Feet);
             Assert.That(service.AreEqual(q1, q2), Is.False);
         }
 
         [Test]
-        public void TestEquality_QuantityLength_NullComparison()
+        public void TestEquality_Quantity_NullComparison()
         {
-            QuantityLength q1 = new QuantityLength(1.0, LengthUnit.Feet);
-            QuantityLength? q2 = null;
+            var q1 = new Quantity<LengthUnit>(1.0, LengthUnit.Feet);
+            Quantity<LengthUnit>? q2 = null;
             Assert.That(service.AreEqual(q1, q2!), Is.False);
         }
     }

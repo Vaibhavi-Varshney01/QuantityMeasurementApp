@@ -1,9 +1,9 @@
 using NUnit.Framework;
-using QuantityMeasurementApp.Model;
-using QuantityMeasurementApp.Service;
-using static QuantityMeasurementApp.Model.LengthUnit;
-using static QuantityMeasurementApp.Model.WeightUnit;
-using static QuantityMeasurementApp.Model.VolumeUnit;
+using QuantityMeasurementModel.Models;
+using QuantityMeasurementRepository;
+using static QuantityMeasurementModel.Models.LengthUnit;
+using static QuantityMeasurementModel.Models.WeightUnit;
+using static QuantityMeasurementModel.Models.VolumeUnit;
 
 namespace QuantityMeasurementApp.Tests
 {

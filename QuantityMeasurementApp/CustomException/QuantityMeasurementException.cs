@@ -1,16 +1,9 @@
 using System;
 
-namespace QuantityMeasurementApp.CustomException
+namespace QuantityMeasurementApp.Model
 {
-    // Generic custom exception for Quantity Measurement
     public class QuantityMeasurementException : Exception
     {
-        public QuantityMeasurementException() { }
-
-        public QuantityMeasurementException(string message) 
-            : base(message) { }
-
-        public QuantityMeasurementException(string message, Exception inner) 
-            : base(message, inner) { }
+        public QuantityMeasurementException(string message) : base(message) { }
     }
 }
