@@ -1,6 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <Content Include = "appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <ProjectReference Include="..\QuantityMeasurementBusinessLayer\QuantityMeasurementBusinessLayer.csproj" />
     <ProjectReference Include="..\QuantityMeasurementModel\QuantityMeasurementModel.csproj" />
     <ProjectReference Include="..\QuantityMeasurementRepository\QuantityMeasurementRepository.csproj" />

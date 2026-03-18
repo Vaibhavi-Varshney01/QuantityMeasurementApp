@@ -117,6 +117,9 @@ namespace QuantityMeasurementRepository
         // Public Add
         public Quantity<U> Add<U>(Quantity<U> q1, Quantity<U> q2) where U : Enum
         {
+            if (q1 == null || q2 == null)
+                throw new ArgumentException("Quantities cannot be null");
+
             return Add(q1, q2, q1.Unit);
         }
 
@@ -137,6 +140,9 @@ namespace QuantityMeasurementRepository
         // Public Subtract
         public Quantity<U> Subtract<U>(Quantity<U> q1, Quantity<U> q2) where U : Enum
         {
+            if (q1 == null || q2 == null)
+                throw new ArgumentException("Quantities cannot be null");
+
             return Subtract(q1, q2, q1.Unit);
         }
 

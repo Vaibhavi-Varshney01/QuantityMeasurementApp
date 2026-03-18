@@ -1,16 +1,16 @@
 using QuantityMeasurementModel.Entities;
-using System.Collections.Generic;
 
 namespace QuantityMeasurementRepository
 {
     public class QuantityMeasurementCacheRepository : IQuantityMeasurementRepository
     {
-        private static QuantityMeasurementCacheRepository _instance;
+        private static QuantityMeasurementCacheRepository? _instance;
         private readonly List<QuantityMeasurementEntity> _cache;
 
         private QuantityMeasurementCacheRepository()
         {
             _cache = new List<QuantityMeasurementEntity>();
+            Console.WriteLine("[CacheRepository] Initialised.");
         }
 
         public static QuantityMeasurementCacheRepository Instance =>
@@ -18,12 +18,28 @@ namespace QuantityMeasurementRepository
 
         public void Save(QuantityMeasurementEntity entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
             _cache.Add(entity);
+            Console.WriteLine($"[CacheRepository] Saved: {entity.OperationType} | {entity.MeasurementType}");
         }
 
-        public IEnumerable<QuantityMeasurementEntity> GetAll()
+        public List<QuantityMeasurementEntity> GetAllMeasurements() =>
+            new List<QuantityMeasurementEntity>(_cache);
+
+        public List<QuantityMeasurementEntity> GetMeasurementsByOperation(string operationType) =>
+            _cache.Where(e => e.OperationType.Equals(
+                operationType, StringComparison.OrdinalIgnoreCase)).ToList();
+
+        public List<QuantityMeasurementEntity> GetMeasurementsByType(string measurementType) =>
+            _cache.Where(e => e.MeasurementType.Equals(
+                measurementType, StringComparison.OrdinalIgnoreCase)).ToList();
+
+        public int GetTotalCount() => _cache.Count;
+
+        public void DeleteAll()
         {
-            return _cache;
+            _cache.Clear();
+            Console.WriteLine("[CacheRepository] All records deleted.");
         }
     }
 }

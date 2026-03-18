@@ -16,3 +16,4 @@ C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementApp\ob
 C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementApp\obj\Debug\net8.0\ref\QuantityMeasurementApp.dll
 C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementApp\bin\Debug\net8.0\QuantityMeasurementRepository.dll
 C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementApp\bin\Debug\net8.0\QuantityMeasurementRepository.pdb
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementApp\bin\Debug\net8.0\Resources\schema.sql
