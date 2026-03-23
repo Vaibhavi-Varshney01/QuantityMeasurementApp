@@ -1,14 +1,19 @@
-﻿// using QuantityMeasurementRepository;
-using QuantityMeasurementBusinessLayer.DTO;
+﻿using QuantityMeasurementBusinessLayer.DTO;
 
-namespace QuantityMeasurementBusinessLayer
+namespace QuantityMeasurementBusinessLayer;
+
+public interface IQuantityMeasurementService
 {
-    public interface IQuantityMeasurementService
-    {
-        QuantityDTO Compare(QuantityDTO q1, QuantityDTO q2);
-        QuantityDTO Convert(QuantityDTO q, string targetUnit);
-        QuantityDTO Add(QuantityDTO q1, QuantityDTO q2);
-        QuantityDTO Subtract(QuantityDTO q1, QuantityDTO q2);
-        QuantityDTO Divide(QuantityDTO q1, QuantityDTO q2);
-    }
+    QuantityMeasurementDTO Compare(QuantityDTO q1, QuantityDTO q2);
+    QuantityMeasurementDTO Convert(QuantityDTO q, string targetUnit);
+    QuantityMeasurementDTO Add(QuantityDTO q1, QuantityDTO q2);
+    QuantityMeasurementDTO Subtract(QuantityDTO q1, QuantityDTO q2);
+    QuantityMeasurementDTO Divide(QuantityDTO q1, QuantityDTO q2);
+
+    List<QuantityMeasurementDTO> GetHistoryByOperation(string operation);
+    List<QuantityMeasurementDTO> GetHistoryByType(string type);
+    List<QuantityMeasurementDTO> GetErrorHistory();
+    int CountByOperation(string operation);
 }
+
+

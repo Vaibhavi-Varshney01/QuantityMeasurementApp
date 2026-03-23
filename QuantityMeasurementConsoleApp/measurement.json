@@ -1,0 +1,12 @@
+[
+  {
+    "Operand1": "5 Feet",
+    "Operand2": "5 Cm",
+    "OperationType": "COMPARE",
+    "MeasurementType": "Length",
+    "Result": "False",
+    "HasError": false,
+    "ErrorMessage": null,
+    "CreatedAtUtc": "2026-03-19T11:12:41.8000364+00:00"
+  }
+]

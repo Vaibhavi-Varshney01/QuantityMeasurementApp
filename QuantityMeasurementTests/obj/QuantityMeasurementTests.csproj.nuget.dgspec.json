@@ -46,13 +46,7 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -73,7 +67,88 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.112/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementBusinessLayer\\QuantityMeasurementBusinessLayer.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementBusinessLayer\\QuantityMeasurementBusinessLayer.csproj",
+        "projectName": "QuantityMeasurementBusinessLayer",
+        "projectPath": "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementBusinessLayer\\QuantityMeasurementBusinessLayer.csproj",
+        "packagesPath": "C:\\Users\\VARSH\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementBusinessLayer\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\VARSH\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementModel\\QuantityMeasurementModel.csproj": {
+                "projectPath": "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementModel\\QuantityMeasurementModel.csproj"
+              },
+              "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementRepository\\QuantityMeasurementRepository.csproj": {
+                "projectPath": "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementRepository\\QuantityMeasurementRepository.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.1.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.16.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.112/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
@@ -112,13 +187,7 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -139,7 +208,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.112/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
@@ -182,13 +251,7 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -197,6 +260,24 @@
             "Microsoft.Data.SqlClient": {
               "target": "Package",
               "version": "[6.1.4, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Caching.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
             },
             "Microsoft.Extensions.Logging.Abstractions": {
               "target": "Package",
@@ -219,7 +300,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.112/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
@@ -260,6 +341,9 @@
               },
               "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementRepository\\QuantityMeasurementRepository.csproj": {
                 "projectPath": "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementRepository\\QuantityMeasurementRepository.csproj"
+              },
+              "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementWebAPI\\QuantityMeasurementWebAPI.csproj": {
+                "projectPath": "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementWebAPI\\QuantityMeasurementWebAPI.csproj"
               }
             }
           }
@@ -268,21 +352,23 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Mvc.Testing": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
             "Microsoft.Data.SqlClient": {
               "target": "Package",
               "version": "[6.1.4, )"
+            },
+            "Microsoft.EntityFrameworkCore.InMemory": {
+              "target": "Package",
+              "version": "[8.0.0, )"
             },
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",
@@ -325,7 +411,120 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.112/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementWebAPI\\QuantityMeasurementWebAPI.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementWebAPI\\QuantityMeasurementWebAPI.csproj",
+        "projectName": "QuantityMeasurementWebAPI",
+        "projectPath": "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementWebAPI\\QuantityMeasurementWebAPI.csproj",
+        "packagesPath": "C:\\Users\\VARSH\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementWebAPI\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\VARSH\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementBusinessLayer\\QuantityMeasurementBusinessLayer.csproj": {
+                "projectPath": "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementBusinessLayer\\QuantityMeasurementBusinessLayer.csproj"
+              },
+              "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementModel\\QuantityMeasurementModel.csproj": {
+                "projectPath": "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementModel\\QuantityMeasurementModel.csproj"
+              },
+              "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementRepository\\QuantityMeasurementRepository.csproj": {
+                "projectPath": "C:\\Users\\VARSH\\OneDrive\\Desktop\\QuantityMeasurementApp\\QuantityMeasurementRepository\\QuantityMeasurementRepository.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.1.0, )"
+            },
+            "FluentValidation.AspNetCore": {
+              "target": "Package",
+              "version": "[11.3.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Caching.StackExchangeRedis": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.5.0, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.16.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.112/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

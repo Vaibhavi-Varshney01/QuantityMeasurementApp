@@ -15,6 +15,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuantityMeasurementReposito
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuantityMeasurementConsoleApp", "QuantityMeasurementConsoleApp\QuantityMeasurementConsoleApp.csproj", "{E180EB82-FF78-41A0-946D-7F2001E56C4A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuantityMeasurementWebAPI", "QuantityMeasurementWebAPI\QuantityMeasurementWebAPI.csproj", "{7BA5340F-3A0D-424C-8827-F9107AA6E253}"
+EndProject
+Project("{66A26720-8FB5-11D2-AA7E-00C04F688DDE}") = "Solution Items", "Solution Items", "{5414E1FC-3A4F-4EEC-85DD-1F0D77C35ED2}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		global.json = global.json
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +107,18 @@ Global
 		{E180EB82-FF78-41A0-946D-7F2001E56C4A}.Release|x64.Build.0 = Release|Any CPU
 		{E180EB82-FF78-41A0-946D-7F2001E56C4A}.Release|x86.ActiveCfg = Release|Any CPU
 		{E180EB82-FF78-41A0-946D-7F2001E56C4A}.Release|x86.Build.0 = Release|Any CPU
+		{7BA5340F-3A0D-424C-8827-F9107AA6E253}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BA5340F-3A0D-424C-8827-F9107AA6E253}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BA5340F-3A0D-424C-8827-F9107AA6E253}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7BA5340F-3A0D-424C-8827-F9107AA6E253}.Debug|x64.Build.0 = Debug|Any CPU
+		{7BA5340F-3A0D-424C-8827-F9107AA6E253}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7BA5340F-3A0D-424C-8827-F9107AA6E253}.Debug|x86.Build.0 = Debug|Any CPU
+		{7BA5340F-3A0D-424C-8827-F9107AA6E253}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BA5340F-3A0D-424C-8827-F9107AA6E253}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BA5340F-3A0D-424C-8827-F9107AA6E253}.Release|x64.ActiveCfg = Release|Any CPU
+		{7BA5340F-3A0D-424C-8827-F9107AA6E253}.Release|x64.Build.0 = Release|Any CPU
+		{7BA5340F-3A0D-424C-8827-F9107AA6E253}.Release|x86.ActiveCfg = Release|Any CPU
+		{7BA5340F-3A0D-424C-8827-F9107AA6E253}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,6 +8,10 @@
 *.pdb
 *.mdb
 
+# Local .NET tooling caches (this repo contains these folders)
+.dotnet_cli_home/
+.nuget/
+
 # NuGet
 *.nupkg
 *.snupkg

@@ -1,4 +1,4 @@
-﻿using QuantityMeasurementModel.Entities;
+using QuantityMeasurementModel.Entities;
 using System.Collections.Generic;
 
 namespace QuantityMeasurementRepository
@@ -24,3 +24,4 @@ namespace QuantityMeasurementRepository
         void ReleaseResources() { }
     }
 }
+

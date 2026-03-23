@@ -12,12 +12,14 @@ namespace QuantityMeasurementRepository.Database
     {
         private readonly ILogger<QuantityMeasurementDatabaseRepository> _logger;
         private readonly ConnectionPool _pool;
+        private readonly string _connectionString;
 
 public QuantityMeasurementDatabaseRepository(
     string connectionString, int poolSize = 5,
     ILogger<QuantityMeasurementDatabaseRepository>? logger = null)
 {
     _logger = logger ?? NullLogger<QuantityMeasurementDatabaseRepository>.Instance;
+    _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
     _pool = new ConnectionPool(connectionString, poolSize);
     InitialiseSchema();
     _logger.LogInformation("[DatabaseRepository] Ready.");
@@ -29,6 +31,7 @@ public QuantityMeasurementDatabaseRepository(
     SqlConnection? conn = null;
     try
     {
+        EnsureDatabaseExists();
         conn = _pool.Acquire();
 
         string sql = @"
@@ -73,6 +76,34 @@ public QuantityMeasurementDatabaseRepository(
     }
     finally { if (conn != null) _pool.Release(conn); }
 }
+
+        private void EnsureDatabaseExists()
+        {
+            var builder = new SqlConnectionStringBuilder(_connectionString);
+            string databaseName = builder.InitialCatalog;
+
+            if (string.IsNullOrWhiteSpace(databaseName))
+                return;
+
+            var masterBuilder = new SqlConnectionStringBuilder(builder.ConnectionString)
+            {
+                InitialCatalog = "master"
+            };
+
+            using var masterConn = new SqlConnection(masterBuilder.ConnectionString);
+            masterConn.Open();
+
+            const string sql = @"
+                IF DB_ID(@dbName) IS NULL
+                BEGIN
+                    DECLARE @stmt nvarchar(max) = N'CREATE DATABASE [' + REPLACE(@dbName, ']', ']]') + N']';
+                    EXEC sp_executesql @stmt;
+                END";
+
+            using var cmd = new SqlCommand(sql, masterConn);
+            cmd.Parameters.AddWithValue("@dbName", databaseName);
+            cmd.ExecuteNonQuery();
+        }
 
         // ── Save ──────────────────────────────────────────────────────────────
         public void Save(QuantityMeasurementEntity entity)

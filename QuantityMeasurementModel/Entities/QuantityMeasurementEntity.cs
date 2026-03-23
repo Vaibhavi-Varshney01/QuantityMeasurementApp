@@ -1,65 +1,74 @@
-using System;
-using QuantityMeasurementModel.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace QuantityMeasurementModel.Entities
+namespace QuantityMeasurementModel.Entities;
+
+[Table("quantity_measurements")]
+public class QuantityMeasurementEntity
 {
-    [Serializable]
-    public class QuantityMeasurementEntity
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long Id { get; set; }
+
+    [Required]
+    [MaxLength(50)]
+    public string OperationType { get; set; } = string.Empty;
+
+    [Required]
+    [MaxLength(50)]
+    public string MeasurementType { get; set; } = "Unknown";
+
+    [MaxLength(200)]
+    public string? Operand1 { get; set; }
+
+    [MaxLength(200)]
+    public string? Operand2 { get; set; }
+
+    [MaxLength(200)]
+    public string? Result { get; set; }
+
+    public bool HasError { get; set; } = false;
+
+    [MaxLength(500)]
+    public string? ErrorMessage { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public QuantityMeasurementEntity() { }
+
+    public QuantityMeasurementEntity(string errorMessage)
     {
-        public object? Operand1 { get; }
-        public object? Operand2 { get; }
-        public string OperationType { get; }
-        public object? Result { get; }
-        public string? ErrorMessage { get; }
-        public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
+        OperationType = "ERROR";
+        ErrorMessage = errorMessage ?? "Unknown error";
+        HasError = true;
+    }
 
-        // UC16: MeasurementType property (settable)
-        public string MeasurementType { get; set; } = "Unknown";
+    public QuantityMeasurementEntity(object operand1, string operationType, object result)
+    {
+        Operand1 = operand1?.ToString() ?? throw new ArgumentNullException(nameof(operand1));
+        OperationType = operationType ?? throw new ArgumentNullException(nameof(operationType));
+        Result = result?.ToString() ?? throw new ArgumentNullException(nameof(result));
+        HasError = false;
+    }
 
-        // Single-operand constructor (e.g., convert)
-        public QuantityMeasurementEntity(object operand1, string operationType, object result)
-        {
-            Operand1 = operand1 ?? throw new ArgumentNullException(nameof(operand1));
-            OperationType = operationType ?? throw new ArgumentNullException(nameof(operationType));
-            Result = result ?? throw new ArgumentNullException(nameof(result));
-        }
+    public QuantityMeasurementEntity(object operand1, string operationType, object result, string measurementType)
+        : this(operand1, operationType, result)
+    {
+        MeasurementType = measurementType ?? "Unknown";
+    }
 
-        // Single-operand constructor with MeasurementType (UC16)
-        public QuantityMeasurementEntity(object operand1, string operationType,
-            object result, string measurementType)
-        {
-            Operand1 = operand1 ?? throw new ArgumentNullException(nameof(operand1));
-            OperationType = operationType ?? throw new ArgumentNullException(nameof(operationType));
-            Result = result ?? throw new ArgumentNullException(nameof(result));
-            MeasurementType = measurementType ?? "Unknown";
-        }
+    public QuantityMeasurementEntity(object operand1, object operand2, string operationType, object result)
+    {
+        Operand1 = operand1?.ToString() ?? throw new ArgumentNullException(nameof(operand1));
+        Operand2 = operand2?.ToString() ?? throw new ArgumentNullException(nameof(operand2));
+        OperationType = operationType ?? throw new ArgumentNullException(nameof(operationType));
+        Result = result?.ToString() ?? throw new ArgumentNullException(nameof(result));
+        HasError = false;
+    }
 
-        // Binary-operand constructor (e.g., add/subtract)
-        public QuantityMeasurementEntity(object operand1, object operand2,
-            string operationType, object result)
-        {
-            Operand1 = operand1 ?? throw new ArgumentNullException(nameof(operand1));
-            Operand2 = operand2 ?? throw new ArgumentNullException(nameof(operand2));
-            OperationType = operationType ?? throw new ArgumentNullException(nameof(operationType));
-            Result = result ?? throw new ArgumentNullException(nameof(result));
-        }
-
-        // Binary-operand constructor with MeasurementType (UC16)
-        public QuantityMeasurementEntity(object operand1, object operand2,
-            string operationType, object result, string measurementType)
-        {
-            Operand1 = operand1 ?? throw new ArgumentNullException(nameof(operand1));
-            Operand2 = operand2 ?? throw new ArgumentNullException(nameof(operand2));
-            OperationType = operationType ?? throw new ArgumentNullException(nameof(operationType));
-            Result = result ?? throw new ArgumentNullException(nameof(result));
-            MeasurementType = measurementType ?? "Unknown";
-        }
-
-        // Error constructor
-        public QuantityMeasurementEntity(string errorMessage)
-        {
-            ErrorMessage = errorMessage ?? "Unknown error";
-            OperationType = "ERROR";
-        }
+    public QuantityMeasurementEntity(object operand1, object operand2, string operationType, object result, string measurementType)
+        : this(operand1, operand2, operationType, result)
+    {
+        MeasurementType = measurementType ?? "Unknown";
     }
 }

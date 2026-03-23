@@ -1,5 +1,6 @@
 C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementRepository\bin\Debug\net8.0\Resources\schema.sql
 C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementRepository\bin\Debug\net8.0\QuantityMeasurementRepository.deps.json
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementRepository\bin\Debug\net8.0\QuantityMeasurementRepository.runtimeconfig.json
 C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementRepository\bin\Debug\net8.0\QuantityMeasurementRepository.dll
 C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementRepository\bin\Debug\net8.0\QuantityMeasurementRepository.pdb
 C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementRepository\bin\Debug\net8.0\QuantityMeasurementModel.dll
@@ -10,8 +11,9 @@ C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementReposi
 C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementRepository\obj\Debug\net8.0\QuantityMeasurementRepository.AssemblyInfo.cs
 C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementRepository\obj\Debug\net8.0\QuantityMeasurementRepository.csproj.CoreCompileInputs.cache
 C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementRepository\obj\Debug\net8.0\QuantityMeasurementRepository.sourcelink.json
-C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementRepository\obj\Debug\net8.0\Quantity.87086493.Up2Date
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementRepository\obj\Debug\net8.0\QuantityMeasurementRepository.csproj.CopyComplete
 C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementRepository\obj\Debug\net8.0\QuantityMeasurementRepository.dll
 C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementRepository\obj\Debug\net8.0\refint\QuantityMeasurementRepository.dll
 C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementRepository\obj\Debug\net8.0\QuantityMeasurementRepository.pdb
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementRepository\obj\Debug\net8.0\QuantityMeasurementRepository.genruntimeconfig.cache
 C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementRepository\obj\Debug\net8.0\ref\QuantityMeasurementRepository.dll

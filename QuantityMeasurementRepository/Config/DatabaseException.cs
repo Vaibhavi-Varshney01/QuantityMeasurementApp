@@ -18,6 +18,8 @@ namespace QuantityMeasurementRepository.Config
         }
 
         public override string ToString() =>
-            $"[DatabaseException] Operation={Operation} | {Message}";
+            InnerException == null
+                ? $"[DatabaseException] Operation={Operation} | {Message}"
+                : $"[DatabaseException] Operation={Operation} | {Message} | Inner={InnerException.GetType().Name}: {InnerException.Message}";
     }
 }
