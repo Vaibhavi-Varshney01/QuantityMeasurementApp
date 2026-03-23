@@ -15,22 +15,31 @@ namespace QuantityMeasurementTests
             "Server=localhost\\SQLEXPRESS;Database=QuantityDB_Test;" +
             "Trusted_Connection=True;TrustServerCertificate=True;";
 
-        private QuantityMeasurementDatabaseRepository _repo = null!;
+        private QuantityMeasurementDatabaseRepository? _repo;
         private QuantityMeasurementService            _service = null!;
         private QuantityMeasurementController         _controller = null!;
 
         [SetUp]
         public void Setup()
         {
-            _repo       = new QuantityMeasurementDatabaseRepository(TestConnectionString, poolSize: 3);
-            _service    = new QuantityMeasurementService();
-            _controller = new QuantityMeasurementController(_service);
-            _repo.DeleteAll(); // clean slate before every test
+            try
+            {
+                _repo       = new QuantityMeasurementDatabaseRepository(TestConnectionString, poolSize: 3);
+                _service    = new QuantityMeasurementService();
+                _controller = new QuantityMeasurementController(_service);
+                _repo.DeleteAll(); // clean slate before every test
+            }
+            catch (DatabaseException ex)
+            {
+                Assert.Ignore($"SQL Server not available for integration tests: {ex.Message}");
+            }
         }
 
         [TearDown]
         public void TearDown()
         {
+            if (_repo == null) return;
+
             _repo.DeleteAll();
             _repo.Dispose();
         }

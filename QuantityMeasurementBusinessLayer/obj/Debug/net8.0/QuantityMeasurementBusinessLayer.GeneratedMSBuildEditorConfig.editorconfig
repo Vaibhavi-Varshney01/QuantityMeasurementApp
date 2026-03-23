@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = QuantityMeasurementBusinessLayer
-build_property.ProjectDir = C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementBusinessLayer\
+build_property.ProjectDir = c:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementBusinessLayer\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
