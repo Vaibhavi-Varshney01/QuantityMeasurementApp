@@ -1,1 +1,0 @@
-**TASK COMPLETE** ✅\n\nUpdated .gitignore:\n- Added **/Migrations/\n- Added *.http *.rest\n- Added measurement.json\n\n.sln reviewed: all projects present, .NET 8 consistent, no changes needed.\n\nVerified: dotnet build & test executed successfully.\n\nRun: git add .gitignore TODO.md && git commit -m "chore: enhance .gitignore & review sln"
