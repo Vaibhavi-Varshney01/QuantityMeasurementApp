@@ -57,5 +57,15 @@ appsettings.Development.json
 *.DS_Store
 Thumbs.db
 
+# EF Core Migrations (regenerate locally)
+**/Migrations/
+
+# HTTP launch files
+*.http
+*.rest
+
+# Project-specific
+measurement.json
+
 # Self-contained publish artifacts
 /publish/
