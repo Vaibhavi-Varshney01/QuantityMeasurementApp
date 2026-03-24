@@ -1,62 +1,31 @@
-using System.Text.Json;
+using Microsoft.Extensions.Configuration;
+using System;
 
 namespace QuantityMeasurementRepository.Config
 {
     public class AppConfig
     {
         private static AppConfig? _instance;
-        private readonly Dictionary<string, string> _props = new();
+        private readonly IConfiguration _config;
 
-        private AppConfig()
+        private AppConfig(IConfiguration config)
         {
-            LoadFromFile();
+            _config = config;
         }
 
-        public static AppConfig Instance => _instance ??= new AppConfig();
+        public static AppConfig Instance => 
+            _instance ??= new AppConfig(new ConfigurationBuilder()
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: true)
+                .Build());
 
-        private void LoadFromFile()
-        {
-            // Look for appsettings.json next to the running executable
-            string path = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
-            if (!File.Exists(path))
-            {
-                Console.WriteLine("[AppConfig] appsettings.json not found — using defaults.");
-                SetDefaults();
-                return;
-            }
+        public string GetRepositoryType() => 
+            _config["Database:RepositoryType"] ?? "database";
 
-            using var doc = JsonDocument.Parse(File.ReadAllText(path));
-            var root = doc.RootElement;
+        public string GetConnectionString() => 
+            _config.GetConnectionString("DefaultConnection") ?? "";
 
-            if (root.TryGetProperty("Database", out var db))
-            {
-                if (db.TryGetProperty("ConnectionString", out var cs))
-                    _props["db.connectionString"] = cs.GetString()!;
-                if (db.TryGetProperty("RepositoryType", out var rt))
-                    _props["db.repositoryType"] = rt.GetString()!;
-                if (db.TryGetProperty("MaxPoolSize", out var ps))
-                    _props["db.maxPoolSize"] = ps.GetInt32().ToString();
-            }
-
-            Console.WriteLine("[AppConfig] Configuration loaded successfully.");
-        }
-
-        private void SetDefaults()
-        {
-            _props["db.connectionString"] =
-                "Server=localhost\\SQLEXPRESS;Database=QuantityDB;" +
-                "Trusted_Connection=True;TrustServerCertificate=True;";
-            _props["db.repositoryType"] = "cache";
-            _props["db.maxPoolSize"] = "5";
-        }
-
-        public string GetConnectionString() =>
-            _props.GetValueOrDefault("db.connectionString", "");
-
-        public string GetRepositoryType() =>
-            _props.GetValueOrDefault("db.repositoryType", "cache");
-
-        public int GetMaxPoolSize() =>
-            int.Parse(_props.GetValueOrDefault("db.maxPoolSize", "5"));
+        public int GetMaxPoolSize() => 
+            int.TryParse(_config["Database:MaxPoolSize"], out int size) ? size : 5;
     }
 }

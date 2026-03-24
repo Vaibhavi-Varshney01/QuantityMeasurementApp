@@ -43,7 +43,7 @@ namespace QuantityMeasurementModel.Models
             return Math.Abs(thisBase - otherBase) < 0.00001;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (this == obj)
                 return true;

@@ -19,7 +19,7 @@ namespace QuantityMeasurementModel.Models
             Unit = unit;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj == null || !(obj is Quantity<U>))
                 return false;

@@ -3,7 +3,7 @@ using QuantityMeasurementModel.Models;
 using QuantityMeasurementModel.Entities;
 using QuantityMeasurementRepository;
 
-namespace QuantityMeasurementApp
+namespace QuantityMeasurementConsoleApp
 {
     class Menu : IMenu
     {

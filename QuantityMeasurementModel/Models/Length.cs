@@ -45,7 +45,7 @@ namespace QuantityMeasurementModel.Models
             return unit.ConvertToBaseUnit(value);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (this == obj)
                 return true;

@@ -1,4 +1,4 @@
-namespace QuantityMeasurementApp
+namespace QuantityMeasurementConsoleApp
 {
     public interface IMenu
     {

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Net.Sockets;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using QuantityMeasurementRepository;
+using QuantityMeasurementRepository.Cache;
 
 namespace QuantityMeasurementTests;
 
@@ -22,6 +24,9 @@ namespace QuantityMeasurementTests;
 [NonParallelizable]
 public class UC17_WebApiTests
 {
+    private static readonly string RedisConnectionStringForTests =
+        Environment.GetEnvironmentVariable("QM_TEST_REDIS") ?? string.Empty;
+
     private AuthenticatedWebApiFactory _authenticatedFactory = null!;
     private HttpClient _authenticatedClient = null!;
 
@@ -31,6 +36,14 @@ public class UC17_WebApiTests
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
+        if (!string.IsNullOrWhiteSpace(RedisConnectionStringForTests) &&
+            !RedisLooksReachable(RedisConnectionStringForTests))
+        {
+            Assert.Ignore(
+                $"QM_TEST_REDIS is set to '{RedisConnectionStringForTests}', but Redis is not reachable. " +
+                "Start Redis (e.g., `docker compose up -d redis`) or unset QM_TEST_REDIS to run without Redis.");
+        }
+
         _authenticatedFactory = new AuthenticatedWebApiFactory();
         _authenticatedClient = _authenticatedFactory.CreateClient(new WebApplicationFactoryClientOptions
         {
@@ -51,6 +64,17 @@ public class UC17_WebApiTests
         _authenticatedFactory.Dispose();
         _unauthenticatedClient.Dispose();
         _unauthenticatedFactory.Dispose();
+    }
+
+    [Test]
+    public void testRedisWiring_WhenEnabled_UsesRedisCacheRepository()
+    {
+        if (string.IsNullOrWhiteSpace(RedisConnectionStringForTests))
+            Assert.Ignore("Set QM_TEST_REDIS=localhost:6379 to enable Redis for UC17 tests.");
+
+        using var scope = _authenticatedFactory.Services.CreateScope();
+        var repo = scope.ServiceProvider.GetRequiredService<IQuantityMeasurementRepository>();
+        Assert.That(repo, Is.TypeOf<QuantityMeasurementRedisCacheRepository>());
     }
 
     [Test]
@@ -219,7 +243,7 @@ public class UC17_WebApiTests
             {
                 config.AddInMemoryCollection(new Dictionary<string, string?>
                 {
-                    ["ConnectionStrings:Redis"] = ""
+                    ["ConnectionStrings:Redis"] = RedisConnectionStringForTests
                 });
             });
 
@@ -250,7 +274,7 @@ public class UC17_WebApiTests
             {
                 config.AddInMemoryCollection(new Dictionary<string, string?>
                 {
-                    ["ConnectionStrings:Redis"] = ""
+                    ["ConnectionStrings:Redis"] = RedisConnectionStringForTests
                 });
             });
 
@@ -292,6 +316,48 @@ public class UC17_WebApiTests
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, Scheme.Name);
             return Task.FromResult(AuthenticateResult.Success(ticket));
+        }
+    }
+
+    private static bool RedisLooksReachable(string connectionString)
+    {
+        try
+        {
+            // StackExchange.Redis format: "host:port,option=value"
+            var firstEndpoint = connectionString.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .FirstOrDefault();
+
+            if (string.IsNullOrWhiteSpace(firstEndpoint))
+                return false;
+
+            var hostPort = firstEndpoint.Trim();
+            var lastColon = hostPort.LastIndexOf(':');
+
+            string host;
+            int port;
+
+            if (lastColon >= 0 && lastColon < hostPort.Length - 1 && int.TryParse(hostPort[(lastColon + 1)..], out var parsedPort))
+            {
+                host = hostPort[..lastColon];
+                port = parsedPort;
+            }
+            else
+            {
+                host = hostPort;
+                port = 6379;
+            }
+
+            host = host.Trim();
+            if (string.IsNullOrWhiteSpace(host))
+                return false;
+
+            using var client = new TcpClient();
+            var connectTask = client.ConnectAsync(host, port);
+            return connectTask.Wait(TimeSpan.FromMilliseconds(250)) && client.Connected;
+        }
+        catch
+        {
+            return false;
         }
     }
 }
