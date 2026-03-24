@@ -1,4 +1,4 @@
-namespace QuantityMeasurementBusinessLayer.DTO;
+namespace QuantityMeasurementModel.DTO;
 
 public class QuantityMeasurementDTO
 {

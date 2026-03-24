@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="DTO\\**\\*.cs" />
     <Compile Include="Entities\\**\\*.cs" />
     <Compile Include="Exceptions\\**\\*.cs" />
     <Compile Include="Interface\\**\\*.cs" />

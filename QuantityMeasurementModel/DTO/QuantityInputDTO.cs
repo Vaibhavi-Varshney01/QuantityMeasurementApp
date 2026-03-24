@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using QuantityMeasurementBusinessLayer.DTO;
+using QuantityMeasurementModel.DTO;
 
 namespace QuantityMeasurementWebAPI;
 

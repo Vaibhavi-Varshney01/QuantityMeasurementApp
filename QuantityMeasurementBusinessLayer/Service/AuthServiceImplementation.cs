@@ -1,4 +1,4 @@
-using QuantityMeasurementBusinessLayer.DTO;
+using QuantityMeasurementModel.DTO;
 using QuantityMeasurementBusinessLayer.Helper;
 using QuantityMeasurementBusinessLayer.Interface;
 using QuantityMeasurementModel.Entities;

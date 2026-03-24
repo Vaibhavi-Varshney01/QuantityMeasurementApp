@@ -1,4 +1,4 @@
-using QuantityMeasurementBusinessLayer.DTO;
+using QuantityMeasurementModel.DTO;
 
 namespace QuantityMeasurementBusinessLayer.Interface;
 

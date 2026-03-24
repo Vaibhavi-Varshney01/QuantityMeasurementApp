@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using QuantityMeasurementBusinessLayer.DTO;
+using QuantityMeasurementModel.DTO;
 using QuantityMeasurementBusinessLayer.Interface;
 
 namespace QuantityMeasurementWebAPI.Controllers;

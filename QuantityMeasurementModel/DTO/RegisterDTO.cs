@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace QuantityMeasurementBusinessLayer.DTO;
+namespace QuantityMeasurementModel.DTO;
 
 public class RegisterDTO
 {

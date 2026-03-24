@@ -1,4 +1,4 @@
-using QuantityMeasurementBusinessLayer.DTO;
+using QuantityMeasurementModel.DTO;
 using QuantityMeasurementModel;
 using QuantityMeasurementModel.Entities;
 using QuantityMeasurementRepository;
