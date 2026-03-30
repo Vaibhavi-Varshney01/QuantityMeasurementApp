@@ -1,8 +1,71 @@
-#Build Folders
-bin/
-obj/
+# Build outputs
+/bin/
+/obj/
+/out/
+*.exe
+*.dll
+*.app
+*.pdb
+*.mdb
 
-# VS code settings
+# Local .NET tooling caches (this repo contains these folders)
+.dotnet_cli_home/
+.nuget/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+artifacts/
+project.lock.json
+project.fragment.lock.json
+*.nuget.props
+*.nuget.targets
+
+# Test results & coverage
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+coverage*/
+coverage*.xml
+
+# User/IDE files
 .vs/
+.vscode/
 *.user
 *.suo
+*.userprefs
+*.userosscache
+*.sln.docstates
+*.sln.iml
+
+# Rider / ReSharper
+.idea/
+_ReSharper*/
+*.DotSettings.user
+
+# Configuration secrets
+appsettings.*.local.json
+appsettings.Development.json
+*.env
+
+# Logs and diagnostics
+*.log
+
+# OS files
+*.DS_Store
+Thumbs.db
+
+# EF Core Migrations (regenerate locally)
+**/Migrations/
+
+# HTTP launch files
+*.http
+*.rest
+
+# Project-specific
+measurement.json
+
+# Self-contained publish artifacts
+/publish/

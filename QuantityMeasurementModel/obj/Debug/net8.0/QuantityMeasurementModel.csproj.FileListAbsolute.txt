@@ -1,0 +1,12 @@
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementModel\bin\Debug\net8.0\QuantityMeasurementModel.deps.json
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementModel\bin\Debug\net8.0\QuantityMeasurementModel.dll
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementModel\bin\Debug\net8.0\QuantityMeasurementModel.pdb
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementModel\obj\Debug\net8.0\QuantityMeasurementModel.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementModel\obj\Debug\net8.0\QuantityMeasurementModel.AssemblyInfoInputs.cache
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementModel\obj\Debug\net8.0\QuantityMeasurementModel.AssemblyInfo.cs
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementModel\obj\Debug\net8.0\QuantityMeasurementModel.csproj.CoreCompileInputs.cache
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementModel\obj\Debug\net8.0\QuantityMeasurementModel.sourcelink.json
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementModel\obj\Debug\net8.0\QuantityMeasurementModel.dll
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementModel\obj\Debug\net8.0\refint\QuantityMeasurementModel.dll
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementModel\obj\Debug\net8.0\QuantityMeasurementModel.pdb
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementModel\obj\Debug\net8.0\ref\QuantityMeasurementModel.dll

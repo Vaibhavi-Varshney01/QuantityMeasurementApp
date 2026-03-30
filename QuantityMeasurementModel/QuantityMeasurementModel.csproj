@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\\QuantityMeasurementBusinessLayer\\Models\\**\\*.cs"
+             Link="Models\\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="DTO\\**\\*.cs" />
+    <Compile Include="Entities\\**\\*.cs" />
+    <Compile Include="Exceptions\\**\\*.cs" />
+    <Compile Include="Interface\\**\\*.cs" />
+    <Compile Include="Models\\**\\*.cs" />
+  </ItemGroup>
+
+</Project>
