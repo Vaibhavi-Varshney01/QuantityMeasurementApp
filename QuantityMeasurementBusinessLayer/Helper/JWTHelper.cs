@@ -7,13 +7,22 @@ using QuantityMeasurementModel.Entities;
 
 namespace QuantityMeasurementBusinessLayer.Helper;
 
+/// <summary>
+/// Builds JWT tokens using the configured issuer, audience, and expiry values.
+/// </summary>
 public class JwtHelper
 {
     private readonly IConfiguration _configuration;
 
+    /// <summary>
+    /// Capture configuration values used during token generation.
+    /// </summary>
     public JwtHelper(IConfiguration configuration)
         => _configuration = configuration;
 
+    /// <summary>
+    /// Create a signed token for the user containing the main claims.
+    /// </summary>
     public string GenerateToken(UserEntity user)
     {
         // Read secret key from appsettings.json

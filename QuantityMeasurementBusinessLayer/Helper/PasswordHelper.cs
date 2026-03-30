@@ -1,31 +1,34 @@
 namespace QuantityMeasurementBusinessLayer.Helper;
 
+/// <summary>
+/// Provides helpers for generating and validating hashed passwords.
+/// </summary>
 public static class PasswordHelper
 {
-    // Step 1 — Generate a unique salt for each user
+    /// <summary>
+    /// Generate a unique salt value that can be stored for each user.
+    /// </summary>
+    /// <remarks>
+    /// The work factor is set to 12; higher values increase security but slow operations.
+    /// </remarks>
     public static string GenerateSalt()
     {
-        // BCrypt generates a salt internally but we also store it explicitly
-        // so you can see it separately
         return BCrypt.Net.BCrypt.GenerateSalt(12);
-        // 12 is the work factor — higher = more secure but slower
     }
 
-    // Step 2 — Hash the password using the salt
+    /// <summary>
+    /// Hash a plain password together with its salt and produce a stored hash.
+    /// </summary>
     public static string HashPassword(string plainPassword, string salt)
     {
-        // BCrypt combines the password + salt and produces a hash
-        // The hash is always different even for the same password
-        // because each user has a unique salt
         return BCrypt.Net.BCrypt.HashPassword(plainPassword, salt);
     }
 
-    // Step 3 — Verify password at login
+    /// <summary>
+    /// Confirm that a plain password matches the stored hash during login.
+    /// </summary>
     public static bool VerifyPassword(string plainPassword, string storedHash)
     {
-        // BCrypt extracts the salt from the stored hash automatically
-        // and re-hashes the plain password to compare
         return BCrypt.Net.BCrypt.Verify(plainPassword, storedHash);
     }
 }
- 
