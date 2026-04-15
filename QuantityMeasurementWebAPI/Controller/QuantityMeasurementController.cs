@@ -94,7 +94,7 @@ public class QuantityMeasurementController : ControllerBase
         }
     }
 
-    [AllowAnonymous]
+    [Authorize]
     [HttpGet("history")]
     public IActionResult GetHistory()
     {
@@ -108,7 +108,7 @@ public class QuantityMeasurementController : ControllerBase
         }
     }
 
-    [AllowAnonymous]
+    [Authorize]
     [HttpGet("history/errors")]
     public IActionResult GetErrors()
     {
@@ -122,7 +122,7 @@ public class QuantityMeasurementController : ControllerBase
         }
     }
 
-    [AllowAnonymous]
+    [Authorize]
     [HttpGet("counts")]
     public IActionResult GetCounts()
     {

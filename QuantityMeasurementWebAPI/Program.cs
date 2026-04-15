@@ -22,17 +22,26 @@ builder.Services.AddScoped<JwtHelper>();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
     ?? Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
 
+// Handle Render's postgres:// format if detected
+if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres://"))
+{
+    var databaseUri = new Uri(connectionString);
+    var userInfo = databaseUri.UserInfo.Split(':');
+    connectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+}
+
 builder.Services.AddDbContext<QuantityMeasurementDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// 3. JWT Authentication Configuration
+// 3. JWT Authentication Configuration (Dual Scheme: Custom + Clerk)
 var jwtKey = builder.Configuration["Jwt:Key"] ?? Environment.GetEnvironmentVariable("Jwt__Key");
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "QuantityMeasurementApp";
 var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "QuantityMeasurementApp";
 
+var clerkAuthority = builder.Configuration["Clerk:Authority"] ?? "https://real-weasel-59.clerk.accounts.dev";
+
 if (string.IsNullOrEmpty(jwtKey))
 {
-    // Fallback for development, though highly discouraged for production
     jwtKey = "ThisIsASecretKeyForQuantityMeasurementApp2026!";
 }
 
@@ -41,7 +50,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-.AddJwtBearer(options =>
+.AddJwtBearer(options => // Scheme 1: Custom JWT (Default)
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -53,9 +62,29 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = jwtAudience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
+})
+.AddJwtBearer("Clerk", options => // Scheme 2: Clerk
+{
+    options.Authority = clerkAuthority;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = false, // Clerk tokens usually don't have audience unless configured
+        ValidateLifetime = true
+    };
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    // A combined policy that accepts either Custom JWT or Clerk tokens
+    var combinedPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder(
+        JwtBearerDefaults.AuthenticationScheme,
+        "Clerk")
+        .RequireAuthenticatedUser()
+        .Build();
+    
+    options.DefaultPolicy = combinedPolicy;
+});
 
 // 4. CORS Configuration
 var frontendUrl = builder.Configuration["FrontendUrl"] ?? "http://localhost:3000";
