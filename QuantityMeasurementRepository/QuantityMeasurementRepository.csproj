@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\QuantityMeasurementModel\QuantityMeasurementModel.csproj" />
@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-  <Content Include="Resources\schema.sql">
+  <Content Include="Resources\Schema.sql">
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </Content>
 </ItemGroup>
