@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-  <Content Include="Resources\Schema.sql">
+  <Content Include="Resources/Schema.sql">
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </Content>
 </ItemGroup>
