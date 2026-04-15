@@ -1,4 +1,4 @@
-using Microsoft.Data.SqlClient;
+using Npgsql;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using QuantityMeasurementModel.Entities;
@@ -14,102 +14,94 @@ namespace QuantityMeasurementRepository.Database
         private readonly ConnectionPool _pool;
         private readonly string _connectionString;
 
-public QuantityMeasurementDatabaseRepository(
-    string connectionString, int poolSize = 5,
-    ILogger<QuantityMeasurementDatabaseRepository>? logger = null)
-{
-    _logger = logger ?? NullLogger<QuantityMeasurementDatabaseRepository>.Instance;
-    _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
-    _pool = new ConnectionPool(connectionString, poolSize);
-    InitialiseSchema();
-    _logger.LogInformation("[DatabaseRepository] Ready.");
-}
+        public QuantityMeasurementDatabaseRepository(
+            string connectionString, int poolSize = 5,
+            ILogger<QuantityMeasurementDatabaseRepository>? logger = null)
+        {
+            _logger = logger ?? NullLogger<QuantityMeasurementDatabaseRepository>.Instance;
+            _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+            _pool = new ConnectionPool(connectionString, poolSize);
+            InitialiseSchema();
+            _logger.LogInformation("[DatabaseRepository] Ready.");
+        }
 
         // ── Schema init ───────────────────────────────────────────────────────
         private void InitialiseSchema()
-{
-    SqlConnection? conn = null;
-    try
-    {
-        EnsureDatabaseExists();
-        conn = _pool.Acquire();
+        {
+            NpgsqlConnection? conn = null;
+            try
+            {
+                EnsureDatabaseExists();
+                conn = _pool.Acquire();
 
-        string sql = @"
-            IF NOT EXISTS (
-                SELECT * FROM sys.tables WHERE name = 'QuantityMeasurements')
-            BEGIN
-                CREATE TABLE QuantityMeasurements (
-                    Id              INT IDENTITY(1,1) PRIMARY KEY,
-                    OperationType   NVARCHAR(50)  NOT NULL,
-                    MeasurementType NVARCHAR(50)  NOT NULL DEFAULT 'Unknown',
-                    HasError        BIT           NOT NULL DEFAULT 0,
-                    ErrorMessage    NVARCHAR(500) NULL,
-                    CreatedAt       DATETIME      NOT NULL DEFAULT GETDATE()
-                )
-            END
+                string sql = @"
+                    CREATE TABLE IF NOT EXISTS QuantityMeasurements (
+                        Id              SERIAL PRIMARY KEY,
+                        OperationType   VARCHAR(50)  NOT NULL,
+                        MeasurementType VARCHAR(50)  NOT NULL DEFAULT 'Unknown',
+                        HasError        BOOLEAN      NOT NULL DEFAULT FALSE,
+                        ErrorMessage    VARCHAR(500) NULL,
+                        CreatedAt       TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP
+                    );
 
-            IF NOT EXISTS (
-                SELECT * FROM sys.tables WHERE name = 'QuantityMeasurementHistory')
-            BEGIN
-                CREATE TABLE QuantityMeasurementHistory (
-                    Id            INT IDENTITY(1,1) PRIMARY KEY,
-                    MeasurementId INT NOT NULL,
-                    ChangedAt     DATETIME NOT NULL DEFAULT GETDATE(),
-                    Note          NVARCHAR(500) NULL,
-                    FOREIGN KEY (MeasurementId) REFERENCES QuantityMeasurements(Id)
-                )
-            END
+                    CREATE TABLE IF NOT EXISTS QuantityMeasurementHistory (
+                        Id            SERIAL PRIMARY KEY,
+                        MeasurementId INT NOT NULL,
+                        ChangedAt     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        Note          VARCHAR(500) NULL,
+                        FOREIGN KEY (MeasurementId) REFERENCES QuantityMeasurements(Id)
+                    );
 
-            IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_operation_type')
-                CREATE INDEX idx_operation_type   ON QuantityMeasurements(OperationType)
+                    CREATE INDEX IF NOT EXISTS idx_operation_type   ON QuantityMeasurements(OperationType);
+                    CREATE INDEX IF NOT EXISTS idx_measurement_type ON QuantityMeasurements(MeasurementType);";
 
-            IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_measurement_type')
-                CREATE INDEX idx_measurement_type ON QuantityMeasurements(MeasurementType)";
-
-        using var cmd = new SqlCommand(sql, conn);
-        cmd.ExecuteNonQuery();
-        Console.WriteLine("[DatabaseRepository] Schema verified.");
-    }
-    catch (Exception ex)
-    {
-        throw new DatabaseException("Schema initialisation failed.", ex, "SCHEMA_INIT");
-    }
-    finally { if (conn != null) _pool.Release(conn); }
-}
+                using var cmd = new NpgsqlCommand(sql, conn);
+                cmd.ExecuteNonQuery();
+                Console.WriteLine("[DatabaseRepository] Schema verified.");
+            }
+            catch (Exception ex)
+            {
+                throw new DatabaseException("Schema initialisation failed.", ex, "SCHEMA_INIT");
+            }
+            finally { if (conn != null) _pool.Release(conn); }
+        }
 
         private void EnsureDatabaseExists()
         {
-            var builder = new SqlConnectionStringBuilder(_connectionString);
-            string databaseName = builder.InitialCatalog;
+            var builder = new NpgsqlConnectionStringBuilder(_connectionString);
+            string? databaseName = builder.Database;
 
             if (string.IsNullOrWhiteSpace(databaseName))
                 return;
 
-            var masterBuilder = new SqlConnectionStringBuilder(builder.ConnectionString)
+            // Connect to 'postgres' database to check/create the target database
+            var masterBuilder = new NpgsqlConnectionStringBuilder(_connectionString)
             {
-                InitialCatalog = "master"
+                Database = "postgres"
             };
 
-            using var masterConn = new SqlConnection(masterBuilder.ConnectionString);
+            using var masterConn = new NpgsqlConnection(masterBuilder.ConnectionString);
             masterConn.Open();
 
-            const string sql = @"
-                IF DB_ID(@dbName) IS NULL
-                BEGIN
-                    DECLARE @stmt nvarchar(max) = N'CREATE DATABASE [' + REPLACE(@dbName, ']', ']]') + N']';
-                    EXEC sp_executesql @stmt;
-                END";
+            using var checkCmd = new NpgsqlCommand(
+                "SELECT 1 FROM pg_database WHERE datname = @dbName", masterConn);
+            checkCmd.Parameters.AddWithValue("@dbName", databaseName);
+            var exists = checkCmd.ExecuteScalar() != null;
 
-            using var cmd = new SqlCommand(sql, masterConn);
-            cmd.Parameters.AddWithValue("@dbName", databaseName);
-            cmd.ExecuteNonQuery();
+            if (!exists)
+            {
+                // Note: CREATE DATABASE cannot be executed in a transaction or with parameters for the DB name
+                using var createCmd = new NpgsqlCommand(
+                    $"CREATE DATABASE \"{databaseName.Replace("\"", "\"\"")}\"", masterConn);
+                createCmd.ExecuteNonQuery();
+            }
         }
 
         // ── Save ──────────────────────────────────────────────────────────────
         public void Save(QuantityMeasurementEntity entity)
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
-            SqlConnection? conn = null;
+            NpgsqlConnection? conn = null;
             try
             {
                 conn = _pool.Acquire();
@@ -118,10 +110,10 @@ public QuantityMeasurementDatabaseRepository(
                         (OperationType, MeasurementType, HasError, ErrorMessage)
                     VALUES
                         (@op, @type, @hasError, @errorMsg)";
-                using var cmd = new SqlCommand(sql, conn);
+                using var cmd = new NpgsqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@op",       entity.OperationType);
                 cmd.Parameters.AddWithValue("@type",     entity.MeasurementType);
-                cmd.Parameters.AddWithValue("@hasError", entity.HasError ? 1 : 0);
+                cmd.Parameters.AddWithValue("@hasError", entity.HasError);
                 cmd.Parameters.AddWithValue("@errorMsg",
                     (object?)entity.ErrorMessage ?? DBNull.Value);
                 cmd.ExecuteNonQuery();
@@ -138,12 +130,12 @@ public QuantityMeasurementDatabaseRepository(
         // ── GetAllMeasurements ────────────────────────────────────────────────
         public List<QuantityMeasurementEntity> GetAllMeasurements()
         {
-            SqlConnection? conn = null;
+            NpgsqlConnection? conn = null;
             try
             {
                 conn = _pool.Acquire();
                 var list = new List<QuantityMeasurementEntity>();
-                using var cmd = new SqlCommand(
+                using var cmd = new NpgsqlCommand(
                     "SELECT * FROM QuantityMeasurements ORDER BY CreatedAt DESC", conn);
                 using var reader = cmd.ExecuteReader();
                 while (reader.Read()) list.Add(MapRow(reader));
@@ -160,12 +152,12 @@ public QuantityMeasurementDatabaseRepository(
         public List<QuantityMeasurementEntity> GetMeasurementsByOperation(
             string operationType)
         {
-            SqlConnection? conn = null;
+            NpgsqlConnection? conn = null;
             try
             {
                 conn = _pool.Acquire();
                 var list = new List<QuantityMeasurementEntity>();
-                using var cmd = new SqlCommand(
+                using var cmd = new NpgsqlCommand(
                     "SELECT * FROM QuantityMeasurements WHERE OperationType = @op",
                     conn);
                 cmd.Parameters.AddWithValue("@op", operationType);
@@ -185,12 +177,12 @@ public QuantityMeasurementDatabaseRepository(
         public List<QuantityMeasurementEntity> GetMeasurementsByType(
             string measurementType)
         {
-            SqlConnection? conn = null;
+            NpgsqlConnection? conn = null;
             try
             {
                 conn = _pool.Acquire();
                 var list = new List<QuantityMeasurementEntity>();
-                using var cmd = new SqlCommand(
+                using var cmd = new NpgsqlCommand(
                     "SELECT * FROM QuantityMeasurements WHERE MeasurementType = @type",
                     conn);
                 cmd.Parameters.AddWithValue("@type", measurementType);
@@ -209,13 +201,13 @@ public QuantityMeasurementDatabaseRepository(
         // ── GetTotalCount ─────────────────────────────────────────────────────
         public int GetTotalCount()
         {
-            SqlConnection? conn = null;
+            NpgsqlConnection? conn = null;
             try
             {
                 conn = _pool.Acquire();
-                using var cmd = new SqlCommand(
+                using var cmd = new NpgsqlCommand(
                     "SELECT COUNT(*) FROM QuantityMeasurements", conn);
-                return (int)cmd.ExecuteScalar()!;
+                return Convert.ToInt32(cmd.ExecuteScalar());
             }
             catch (Exception ex)
             {
@@ -227,11 +219,11 @@ public QuantityMeasurementDatabaseRepository(
         // ── DeleteAll ─────────────────────────────────────────────────────────
         public void DeleteAll()
         {
-            SqlConnection? conn = null;
+            NpgsqlConnection? conn = null;
             try
             {
                 conn = _pool.Acquire();
-                using var cmd = new SqlCommand(
+                using var cmd = new NpgsqlCommand(
                     "DELETE FROM QuantityMeasurements", conn);
                 int rows = cmd.ExecuteNonQuery();
                 Console.WriteLine($"[DatabaseRepository] Deleted {rows} row(s).");
@@ -251,7 +243,7 @@ public QuantityMeasurementDatabaseRepository(
         public void Dispose() => _pool.Dispose();
 
         // ── Map DB row → entity ───────────────────────────────────────────────
-        private static QuantityMeasurementEntity MapRow(SqlDataReader r)
+        private static QuantityMeasurementEntity MapRow(NpgsqlDataReader r)
         {
             string opType  = r.GetString(r.GetOrdinal("OperationType"));
             string measType = r.GetString(r.GetOrdinal("MeasurementType"));
@@ -275,3 +267,4 @@ public QuantityMeasurementDatabaseRepository(
         }
     }
 }
+

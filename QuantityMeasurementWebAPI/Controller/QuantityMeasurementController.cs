@@ -7,7 +7,6 @@ namespace QuantityMeasurementWebAPI.Controllers;
 
 [ApiController]
 [Route("api/v1/quantities")]
-[Authorize]
 public class QuantityMeasurementController : ControllerBase
 {
     private readonly IQuantityMeasurementService _service;
@@ -15,17 +14,25 @@ public class QuantityMeasurementController : ControllerBase
     public QuantityMeasurementController(IQuantityMeasurementService service)
         => _service = service;
 
+    [AllowAnonymous]
     [HttpPost("compare")]
     public IActionResult Compare([FromBody] QuantityInputDTO input)
     {
         try
         {
-            var result = _service.Compare(input.ThisQuantityDTO!, input.ThatQuantityDTO!);
+            if (input == null || input.ThisQuantityDTO == null || input.ThatQuantityDTO == null)
+                return BadRequest(new { message = "Invalid input" });
+
+            var result = _service.Compare(input.ThisQuantityDTO, input.ThatQuantityDTO);
             return Ok(result);
         }
-        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
+    [AllowAnonymous]
     [HttpPost("add")]
     public IActionResult Add([FromBody] QuantityInputDTO input)
     {
@@ -34,9 +41,13 @@ public class QuantityMeasurementController : ControllerBase
             var result = _service.Add(input.ThisQuantityDTO!, input.ThatQuantityDTO!);
             return Ok(result);
         }
-        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
+    [AllowAnonymous]
     [HttpPost("subtract")]
     public IActionResult Subtract([FromBody] QuantityInputDTO input)
     {
@@ -45,9 +56,13 @@ public class QuantityMeasurementController : ControllerBase
             var result = _service.Subtract(input.ThisQuantityDTO!, input.ThatQuantityDTO!);
             return Ok(result);
         }
-        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
+    [AllowAnonymous]
     [HttpPost("divide")]
     public IActionResult Divide([FromBody] QuantityInputDTO input)
     {
@@ -56,9 +71,13 @@ public class QuantityMeasurementController : ControllerBase
             var result = _service.Divide(input.ThisQuantityDTO!, input.ThatQuantityDTO!);
             return Ok(result);
         }
-        catch (Exception ex) { return StatusCode(500, new { message = ex.Message }); }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = ex.Message });
+        }
     }
 
+    [AllowAnonymous]
     [HttpPost("convert")]
     public IActionResult Convert([FromBody] QuantityInputDTO input)
     {
@@ -66,24 +85,55 @@ public class QuantityMeasurementController : ControllerBase
         {
             var result = _service.Convert(
                 input.ThisQuantityDTO!, input.ThatQuantityDTO!.Unit!);
+
             return Ok(result);
         }
-        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
-    [HttpGet("history/operation/{operation}")]
-    public IActionResult GetByOperation(string operation)
-        => Ok(_service.GetHistoryByOperation(operation));
+    [AllowAnonymous]
+    [HttpGet("history")]
+    public IActionResult GetHistory()
+    {
+        try
+        {
+            return Ok(_service.GetAllHistory());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = ex.Message });
+        }
+    }
 
-    [HttpGet("history/type/{type}")]
-    public IActionResult GetByType(string type)
-        => Ok(_service.GetHistoryByType(type));
-
-    [HttpGet("history/errored")]
+    [AllowAnonymous]
+    [HttpGet("history/errors")]
     public IActionResult GetErrors()
-        => Ok(_service.GetErrorHistory());
+    {
+        try
+        {
+            return Ok(_service.GetErrorHistory());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = ex.Message });
+        }
+    }
 
-    [HttpGet("count/{operation}")]
-    public IActionResult Count(string operation)
-        => Ok(_service.CountByOperation(operation));
+    [AllowAnonymous]
+    [HttpGet("counts")]
+    public IActionResult GetCounts()
+    {
+        try
+        {
+            var ops = new[] { "COMPARE", "ADD", "SUBTRACT", "DIVIDE", "CONVERT" };
+            return Ok(ops.Select(op => _service.CountByOperation(op)).ToList());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = ex.Message });
+        }
+    }
 }

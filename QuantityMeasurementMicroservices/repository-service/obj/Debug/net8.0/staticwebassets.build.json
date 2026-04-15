@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "QJAtmp5rjLYQkpzm/mHqVZnN9n61CVxH+UERQq8kW1Y=",
+  "Source": "repository-service",
+  "BasePath": "_content/repository-service",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

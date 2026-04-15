@@ -16,7 +16,7 @@
     <PrivateAssets>all</PrivateAssets>
   </PackageReference>
   <!-- Permanent storage: use SQL Server instead of InMemory -->
-  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
+  <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
   <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
   <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.16.0" />

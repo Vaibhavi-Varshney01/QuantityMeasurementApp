@@ -184,5 +184,22 @@ namespace QuantityMeasurementBusinessLayer
 
         public int CountByOperation(string operation)
             => _repository.GetMeasurementsByOperation(operation).Count;
+
+        public List<QuantityMeasurementDTO> GetAllHistory()
+        {
+            var entities = _repository.GetAllMeasurements();
+            return entities.Select(e => new QuantityMeasurementDTO
+            {
+                Operation = e.OperationType,
+                ThisValue = double.TryParse((e.Operand1 ?? "").Split(' ')[0], out var v1) ? v1 : 0,
+                ThisUnit = (e.Operand1 ?? "").Split(' ').Length > 1 ? e.Operand1!.Split(' ')[1] : "",
+                ThisMeasurementType = e.MeasurementType,
+                ThatValue = double.TryParse((e.Operand2 ?? "").Split(' ')[0], out var v2) ? v2 : 0,
+                ThatUnit = (e.Operand2 ?? "").Split(' ').Length > 1 ? e.Operand2!.Split(' ')[1] : "",
+                ResultString = e.Result,
+                ErrorMessage = e.ErrorMessage,
+                IsError = e.HasError
+            }).ToList();
+        }
     }
 }

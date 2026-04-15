@@ -1,0 +1,11 @@
+**/.git
+**/.vs
+**/.vscode
+**/bin
+**/obj
+**/.nuget
+**/.dotnet_cli_home
+**/*.user
+**/*.lock.json
+Dockerfile
+.dockerignore

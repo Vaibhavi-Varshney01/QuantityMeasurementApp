@@ -1,8 +1,0 @@
-C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementTests\bin\Debug\net10.0\.msCoverageSourceRootsMapping_QuantityMeasurementTests
-C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementTests\bin\Debug\net10.0\CoverletSourceRootsMapping_QuantityMeasurementTests
-C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementTests\obj\Debug\net10.0\QuantityMeasurementTests.csproj.AssemblyReference.cache
-C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementTests\obj\Debug\net10.0\QuantityMeasurementTests.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementTests\obj\Debug\net10.0\QuantityMeasurementTests.AssemblyInfoInputs.cache
-C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementTests\obj\Debug\net10.0\QuantityMeasurementTests.AssemblyInfo.cs
-C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementTests\obj\Debug\net10.0\QuantityMeasurementTests.csproj.CoreCompileInputs.cache
-C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementTests\obj\Debug\net10.0\QuantityMeasurementTests.sourcelink.json

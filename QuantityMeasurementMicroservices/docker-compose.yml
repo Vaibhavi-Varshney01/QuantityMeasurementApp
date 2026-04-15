@@ -1,0 +1,93 @@
+version: "3.9"
+
+services:
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "YourStrong@Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqldata:/var/opt/mssql
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "YourStrong@Passw0rd", "-Q", "SELECT 1"]
+      interval: 10s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 5
+
+  repository-service:
+    build:
+      context: .
+      dockerfile: repository-service/Dockerfile
+    ports:
+      - "5003:5003"
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=QuantityMeasurementDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;"
+      ConnectionStrings__Redis: "redis:6379"
+      Urls: "http://0.0.0.0:5003"
+    depends_on:
+      sqlserver: { condition: service_healthy }
+      redis:     { condition: service_healthy }
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=QuantityMeasurementDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;"
+      Jwt__Key:         "ThisIsASecretKeyForQuantityMeasurementApp2026!"
+      Jwt__Issuer:      "QuantityMeasurementApp"
+      Jwt__Audience:    "QuantityMeasurementApp"
+      Jwt__ExpiryHours: "1"
+      Urls: "http://0.0.0.0:5001"
+    depends_on:
+      sqlserver: { condition: service_healthy }
+
+  qma-service:
+    build:
+      context: .
+      dockerfile: qma-service/Dockerfile
+    ports:
+      - "5002:5002"
+    environment:
+      Services__RepositoryService: "http://repository-service:5003/"
+      Jwt__Key:         "ThisIsASecretKeyForQuantityMeasurementApp2026!"
+      Jwt__Issuer:      "QuantityMeasurementApp"
+      Jwt__Audience:    "QuantityMeasurementApp"
+      Jwt__ExpiryHours: "1"
+      Urls: "http://0.0.0.0:5002"
+    depends_on:
+      - repository-service
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      Services__AuthService: "http://auth-service:5001/"
+      Services__QMAService:  "http://qma-service:5002/"
+      Jwt__Key:         "ThisIsASecretKeyForQuantityMeasurementApp2026!"
+      Jwt__Issuer:      "QuantityMeasurementApp"
+      Jwt__Audience:    "QuantityMeasurementApp"
+      Jwt__ExpiryHours: "1"
+      Urls: "http://0.0.0.0:5000"
+    depends_on:
+      - auth-service
+      - qma-service
+
+volumes:
+  sqldata:

@@ -1,4 +1,4 @@
-using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace QuantityMeasurementRepository.Connection
 {
@@ -6,7 +6,7 @@ namespace QuantityMeasurementRepository.Connection
     {
         private readonly string _connectionString;
         private readonly int _maxSize;
-        private readonly Queue<SqlConnection> _available;
+        private readonly Queue<NpgsqlConnection> _available;
         private int _totalCreated;
         private bool _disposed;
         private readonly object _lock = new();
@@ -15,11 +15,11 @@ namespace QuantityMeasurementRepository.Connection
         {
             _connectionString = connectionString;
             _maxSize = maxSize;
-            _available = new Queue<SqlConnection>();
+            _available = new Queue<NpgsqlConnection>();
             Console.WriteLine($"[ConnectionPool] Initialised (max={_maxSize}).");
         }
 
-        public SqlConnection Acquire()
+        public NpgsqlConnection Acquire()
         {
             lock (_lock)
             {
@@ -36,7 +36,7 @@ namespace QuantityMeasurementRepository.Connection
                     throw new InvalidOperationException(
                         $"Connection pool exhausted (max={_maxSize}).");
 
-                var newConn = new SqlConnection(_connectionString);
+                var newConn = new NpgsqlConnection(_connectionString);
                 newConn.Open();
                 _totalCreated++;
                 Console.WriteLine($"[ConnectionPool] New connection ({_totalCreated}/{_maxSize}).");
@@ -44,7 +44,7 @@ namespace QuantityMeasurementRepository.Connection
             }
         }
 
-        public void Release(SqlConnection connection)
+        public void Release(NpgsqlConnection connection)
         {
             if (connection == null) return;
             lock (_lock)

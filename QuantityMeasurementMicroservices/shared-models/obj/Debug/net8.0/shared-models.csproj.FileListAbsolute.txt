@@ -1,0 +1,13 @@
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementMicroservices\shared-models\bin\Debug\net8.0\shared-models.deps.json
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementMicroservices\shared-models\bin\Debug\net8.0\shared-models.dll
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementMicroservices\shared-models\bin\Debug\net8.0\shared-models.pdb
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementMicroservices\shared-models\obj\Debug\net8.0\shared-models.csproj.AssemblyReference.cache
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementMicroservices\shared-models\obj\Debug\net8.0\shared-models.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementMicroservices\shared-models\obj\Debug\net8.0\shared-models.AssemblyInfoInputs.cache
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementMicroservices\shared-models\obj\Debug\net8.0\shared-models.AssemblyInfo.cs
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementMicroservices\shared-models\obj\Debug\net8.0\shared-models.csproj.CoreCompileInputs.cache
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementMicroservices\shared-models\obj\Debug\net8.0\shared-models.sourcelink.json
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementMicroservices\shared-models\obj\Debug\net8.0\shared-models.dll
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementMicroservices\shared-models\obj\Debug\net8.0\refint\shared-models.dll
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementMicroservices\shared-models\obj\Debug\net8.0\shared-models.pdb
+C:\Users\VARSH\OneDrive\Desktop\QuantityMeasurementApp\QuantityMeasurementMicroservices\shared-models\obj\Debug\net8.0\ref\shared-models.dll

@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "JGREiPpqLkdw8fLwayYWRJ+x2HDoJpQnQDRmdI4DL0g=",
+  "Source": "qma-service",
+  "BasePath": "_content/qma-service",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

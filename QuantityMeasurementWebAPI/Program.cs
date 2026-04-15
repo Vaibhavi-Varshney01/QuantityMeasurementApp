@@ -1,108 +1,110 @@
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using QuantityMeasurementBusinessLayer;
-using QuantityMeasurementBusinessLayer.Helper;
 using QuantityMeasurementBusinessLayer.Interface;
 using QuantityMeasurementBusinessLayer.Service;
+using QuantityMeasurementBusinessLayer.Helper;
 using QuantityMeasurementRepository;
-using QuantityMeasurementRepository.Cache;
 using QuantityMeasurementRepository.Database;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register services
+// 1. Services & Dependency Injection
 builder.Services.AddScoped<IQuantityMeasurementService, QuantityMeasurementServiceImpl>();
+builder.Services.AddScoped<IQuantityMeasurementRepository, QuantityMeasurementEFRepository>();
 builder.Services.AddScoped<IAuthService, AuthServiceImpl>();
 builder.Services.AddScoped<JwtHelper>();
 
-// Database
+// 2. Database Configuration (Switch to PostgreSQL)
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    ?? Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
+
 builder.Services.AddDbContext<QuantityMeasurementDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
-// Repository (optionally cached via Redis)
-var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
-if (!string.IsNullOrWhiteSpace(redisConnectionString))
-{
-    builder.Services.AddStackExchangeRedisCache(options =>
-    {
-        options.Configuration = redisConnectionString;
-        options.InstanceName = "QuantityMeasurement:";
-    });
+// 3. JWT Authentication Configuration
+var jwtKey = builder.Configuration["Jwt:Key"] ?? Environment.GetEnvironmentVariable("Jwt__Key");
+var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "QuantityMeasurementApp";
+var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "QuantityMeasurementApp";
 
-    builder.Services.AddScoped<QuantityMeasurementEFRepository>();
-    builder.Services.AddScoped<IQuantityMeasurementRepository>(sp =>
-        new QuantityMeasurementRedisCacheRepository(
-            sp.GetRequiredService<QuantityMeasurementEFRepository>(),
-            sp.GetRequiredService<IDistributedCache>()));
-}
-else
+if (string.IsNullOrEmpty(jwtKey))
 {
-    builder.Services.AddScoped<IQuantityMeasurementRepository, QuantityMeasurementEFRepository>();
+    // Fallback for development, though highly discouraged for production
+    jwtKey = "ThisIsASecretKeyForQuantityMeasurementApp2026!";
 }
 
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        var key = builder.Configuration["Jwt:Key"];
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer           = true,
-            ValidateAudience         = true,
-            ValidateLifetime         = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer              = builder.Configuration["Jwt:Issuer"],
-            ValidAudience            = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey         = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key!))
-        };
-    });
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+    };
+});
 
 builder.Services.AddAuthorization();
 
-// Swagger
+// 4. CORS Configuration
+var frontendUrl = builder.Configuration["FrontendUrl"] ?? "http://localhost:3000";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ProductionPolicy", policy =>
+    {
+        policy.WithOrigins(frontendUrl)
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+});
+
+// Controllers & Swagger
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Health checks
-builder.Services.AddHealthChecks();
-
-builder.Services.AddControllers();
-
 var app = builder.Build();
 
-// Global error handler
+// 5. Global Error Handler
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
     {
         var exception = context.Features.Get<IExceptionHandlerPathFeature>()?.Error;
         context.Response.ContentType = "application/json";
-        context.Response.StatusCode  = 500;
+        context.Response.StatusCode = 500;
+
         await context.Response.WriteAsJsonAsync(new
         {
-            timestamp = DateTime.UtcNow,
-            status    = 500,
-            error     = "Internal Server Error",
-            message   = app.Environment.IsDevelopment() ? exception?.Message : null,
-            path      = context.Request.Path.Value
+            message = exception?.Message
         });
     });
 });
 
+// Swagger (Always enabled for development/debugging on Render)
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseCors("ProductionPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Default landing endpoint (so http://localhost:<port>/ doesn't show 404)
-app.MapGet("/", () => Results.Redirect("/swagger"));
-app.MapHealthChecks("/actuator/health");
 app.MapControllers();
+
 app.Run();
 
 public partial class Program { }

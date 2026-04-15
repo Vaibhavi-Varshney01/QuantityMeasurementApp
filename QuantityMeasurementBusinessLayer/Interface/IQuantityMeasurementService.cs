@@ -48,6 +48,11 @@ public interface IQuantityMeasurementService
     List<QuantityMeasurementDTO> GetErrorHistory();
 
     /// <summary>
+    /// Retrieve all history entries from the database.
+    /// </summary>
+    List<QuantityMeasurementDTO> GetAllHistory();
+
+    /// <summary>
     /// Count how often a specific operation has been performed for reporting.
     /// </summary>
     int CountByOperation(string operation);
