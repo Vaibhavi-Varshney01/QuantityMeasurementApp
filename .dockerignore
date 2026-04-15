@@ -1,11 +1,13 @@
-**/.git
-**/.vs
-**/.vscode
 **/bin
 **/obj
+**/publish
+**/publish_test
 **/.nuget
 **/.dotnet_cli_home
 **/*.user
 **/*.lock.json
 Dockerfile
 .dockerignore
+.git
+.vs
+.vscode
