@@ -129,34 +129,34 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// 4.5. Automatic Database Migration
+// 4.5. Automatic Database Migration & Schema Creation
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<QuantityMeasurementDbContext>();
     try
     {
-        Console.WriteLine("[Database] Checking for pending migrations...");
-        var pendingMigrations = db.Database.GetPendingMigrations().ToList();
+        Console.WriteLine("[Database] Starting schema Initialization...");
         
+        // Try migrations first (standard way)
+        var pendingMigrations = db.Database.GetPendingMigrations().ToList();
         if (pendingMigrations.Any())
         {
-            Console.WriteLine($"[Database] Found {pendingMigrations.Count} pending migrations: {string.Join(", ", pendingMigrations)}");
+            Console.WriteLine($"[Database] Applying {pendingMigrations.Count} pending migrations...");
             db.Database.Migrate();
-            Console.WriteLine("[Database] Migrations applied successfully.");
         }
-        else
-        {
-            Console.WriteLine("[Database] No pending migrations found. (If tables are missing, this is the problem!)");
-            // Safety check: if no migrations found but we suspect tables are missing
-            // we can try EnsureCreated() as a last resort if migrations seem broken
-            // db.Database.EnsureCreated(); 
-        }
+        
+        // Final safety check: This creates tables if they don't exist, 
+        // even if migrations are acting up.
+        Console.WriteLine("[Database] Ensuring tables exist (Force-Check)...");
+        db.Database.EnsureCreated();
+        
+        Console.WriteLine("[Database] Schema is Ready.");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"[Database] FATAL ERROR during migration: {ex.Message}");
+        Console.WriteLine($"[Database] ERROR during initialization: {ex.Message}");
         if (ex.InnerException != null) 
-            Console.WriteLine($"[Database] Inner Exception: {ex.InnerException.Message}");
+            Console.WriteLine($"[Database] Inner: {ex.InnerException.Message}");
     }
 }
 
