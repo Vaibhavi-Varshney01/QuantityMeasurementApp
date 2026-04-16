@@ -28,7 +28,10 @@ public class QuantityMeasurementController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(new { message = ex.Message });
+            var message = ex.InnerException != null 
+                ? $"{ex.Message} --> {ex.InnerException.Message}" 
+                : ex.Message;
+            return BadRequest(new { message });
         }
     }
 
@@ -43,7 +46,10 @@ public class QuantityMeasurementController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(new { message = ex.Message });
+            var message = ex.InnerException != null 
+                ? $"{ex.Message} --> {ex.InnerException.Message}" 
+                : ex.Message;
+            return BadRequest(new { message });
         }
     }
 
@@ -58,7 +64,10 @@ public class QuantityMeasurementController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(new { message = ex.Message });
+            var message = ex.InnerException != null 
+                ? $"{ex.Message} --> {ex.InnerException.Message}" 
+                : ex.Message;
+            return BadRequest(new { message });
         }
     }
 
@@ -90,7 +99,10 @@ public class QuantityMeasurementController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(new { message = ex.Message });
+            var message = ex.InnerException != null 
+                ? $"{ex.Message} --> {ex.InnerException.Message}" 
+                : ex.Message;
+            return BadRequest(new { message });
         }
     }
 
