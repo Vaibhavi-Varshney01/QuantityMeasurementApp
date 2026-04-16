@@ -19,13 +19,14 @@ builder.Services.AddScoped<IAuthService, AuthServiceImpl>();
 builder.Services.AddScoped<JwtHelper>();
 
 // 2. Database Configuration (Switch to PostgreSQL)
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+// Priority: Environment Variables (Render/Docker) > Config File (Local)
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+    ?? Environment.GetEnvironmentVariable("DATABASE_PRIVATE_URL")
     ?? Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
-    ?? Environment.GetEnvironmentVariable("DATABASE_URL")
-    ?? Environment.GetEnvironmentVariable("DATABASE_PRIVATE_URL");
+    ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
 // Handle Render's postgres:// format if detected
-if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres://"))
+if (!string.IsNullOrWhiteSpace(connectionString) && connectionString.StartsWith("postgres://"))
 {
     try
     {
@@ -45,9 +46,9 @@ if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("post
     }
 }
 
-if (string.IsNullOrEmpty(connectionString))
+if (string.IsNullOrWhiteSpace(connectionString))
 {
-    Console.WriteLine("[Warning] No connection string found. Falling back to default localhost.");
+    Console.WriteLine("[Warning] No valid connection string found in Environment or Config. Falling back to localhost.");
     connectionString = "Host=localhost;Database=QuantityMeasurementDB;Username=postgres;Password=password";
 }
 
