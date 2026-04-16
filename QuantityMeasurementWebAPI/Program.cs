@@ -20,14 +20,35 @@ builder.Services.AddScoped<JwtHelper>();
 
 // 2. Database Configuration (Switch to PostgreSQL)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-    ?? Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
+    ?? Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+    ?? Environment.GetEnvironmentVariable("DATABASE_URL")
+    ?? Environment.GetEnvironmentVariable("DATABASE_PRIVATE_URL");
 
 // Handle Render's postgres:// format if detected
 if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres://"))
 {
-    var databaseUri = new Uri(connectionString);
-    var userInfo = databaseUri.UserInfo.Split(':');
-    connectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+    try
+    {
+        var databaseUri = new Uri(connectionString);
+        var userInfo = databaseUri.UserInfo.Split(':');
+        var host = databaseUri.Host;
+        var port = databaseUri.Port > 0 ? databaseUri.Port : 5432;
+        var db = databaseUri.AbsolutePath.TrimStart('/');
+        var user = userInfo[0];
+        var pass = userInfo.Length > 1 ? userInfo[1] : "";
+
+        connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={pass};SSL Mode=Require;Trust Server Certificate=true";
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[Error] Failed to parse connection string URI: {ex.Message}");
+    }
+}
+
+if (string.IsNullOrEmpty(connectionString))
+{
+    Console.WriteLine("[Warning] No connection string found. Falling back to default localhost.");
+    connectionString = "Host=localhost;Database=QuantityMeasurementDB;Username=postgres;Password=password";
 }
 
 builder.Services.AddDbContext<QuantityMeasurementDbContext>(options =>
