@@ -53,7 +53,7 @@ if (string.IsNullOrWhiteSpace(connectionString))
 }
 
 builder.Services.AddDbContext<QuantityMeasurementDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(connectionString, b => b.MigrationsAssembly("QuantityMeasurementRepository")));
 
 // 3. JWT Authentication Configuration (Dual Scheme: Custom + Clerk)
 var jwtKey = builder.Configuration["Jwt:Key"] ?? Environment.GetEnvironmentVariable("Jwt__Key");
