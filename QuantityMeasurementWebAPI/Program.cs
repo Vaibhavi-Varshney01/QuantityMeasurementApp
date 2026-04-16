@@ -25,8 +25,8 @@ var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
     ?? Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
     ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Handle Render's postgres:// format if detected
-if (!string.IsNullOrWhiteSpace(connectionString) && connectionString.StartsWith("postgres://"))
+// Handle Render's postgres:// or postgresql:// format if detected
+if (!string.IsNullOrWhiteSpace(connectionString) && (connectionString.StartsWith("postgres://") || connectionString.StartsWith("postgresql://")))
 {
     try
     {
