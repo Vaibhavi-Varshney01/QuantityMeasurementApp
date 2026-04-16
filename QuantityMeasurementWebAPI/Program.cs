@@ -129,6 +129,22 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// 4.5. Automatic Database Migration
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<QuantityMeasurementDbContext>();
+    try
+    {
+        Console.WriteLine("[Database] Applying migrations...");
+        db.Database.Migrate();
+        Console.WriteLine("[Database] Migrations applied successfully.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[Database] Error applying migrations: {ex.Message}");
+    }
+}
+
 // 5. Global Error Handler
 app.UseExceptionHandler(errorApp =>
 {
