@@ -135,13 +135,28 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<QuantityMeasurementDbContext>();
     try
     {
-        Console.WriteLine("[Database] Applying migrations...");
-        db.Database.Migrate();
-        Console.WriteLine("[Database] Migrations applied successfully.");
+        Console.WriteLine("[Database] Checking for pending migrations...");
+        var pendingMigrations = db.Database.GetPendingMigrations().ToList();
+        
+        if (pendingMigrations.Any())
+        {
+            Console.WriteLine($"[Database] Found {pendingMigrations.Count} pending migrations: {string.Join(", ", pendingMigrations)}");
+            db.Database.Migrate();
+            Console.WriteLine("[Database] Migrations applied successfully.");
+        }
+        else
+        {
+            Console.WriteLine("[Database] No pending migrations found. (If tables are missing, this is the problem!)");
+            // Safety check: if no migrations found but we suspect tables are missing
+            // we can try EnsureCreated() as a last resort if migrations seem broken
+            // db.Database.EnsureCreated(); 
+        }
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"[Database] Error applying migrations: {ex.Message}");
+        Console.WriteLine($"[Database] FATAL ERROR during migration: {ex.Message}");
+        if (ex.InnerException != null) 
+            Console.WriteLine($"[Database] Inner Exception: {ex.InnerException.Message}");
     }
 }
 

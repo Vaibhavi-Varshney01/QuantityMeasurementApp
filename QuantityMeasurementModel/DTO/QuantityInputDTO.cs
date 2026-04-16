@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using QuantityMeasurementModel.DTO;
 
-namespace QuantityMeasurementWebAPI;
+namespace QuantityMeasurementModel.DTO;
 
 public class QuantityInputDTO
 {
