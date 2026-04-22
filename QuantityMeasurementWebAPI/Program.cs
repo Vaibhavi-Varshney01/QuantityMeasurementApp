@@ -43,6 +43,10 @@ if (!string.IsNullOrWhiteSpace(connectionString) &&
         Console.WriteLine($"[Error] Failed to parse connection string URI: {ex.Message}");
     }
 }
+else
+{
+    Console.WriteLine("[Database] Using connection string from configuration (not a URI).");
+}
 
 if (string.IsNullOrWhiteSpace(connectionString))
 {
@@ -100,55 +104,91 @@ builder.Services.AddAuthorization(options =>
     options.DefaultPolicy = combinedPolicy;
 });
 
-// 4. CORS — single policy, all frontend origins
-// ✅ Only ONE AddCors call — fixes the duplicate conflict
+// 4. CORS — allow any origin for troubleshooting connectivity
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins(
-                "http://localhost:5173",
-                "http://localhost:5174",
-                "http://localhost:3000"
-              )
+        policy.AllowAnyOrigin()
               .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
+              .AllowAnyHeader();
+        // Note: AllowAnyOrigin() cannot be used with AllowCredentials()
     });
 });
 
-// 5. Controllers & Swagger
+// 5. Health Checks
+builder.Services.AddHealthChecks();
+
+// 6. Controllers & Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// 6. Auto-migrate database
+// 7. Auto-migrate database
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<QuantityMeasurementDbContext>();
+    var services = scope.ServiceProvider;
+    var db = services.GetRequiredService<QuantityMeasurementDbContext>();
     try
     {
         Console.WriteLine("[Database] Starting schema initialization...");
+        
+        // 1. Try to run migrations
         var pending = db.Database.GetPendingMigrations().ToList();
         if (pending.Any())
         {
             Console.WriteLine($"[Database] Applying {pending.Count} pending migrations...");
             db.Database.Migrate();
         }
-        db.Database.EnsureCreated();
-        Console.WriteLine("[Database] Schema is ready.");
+        
+        // 2. Force check tables (last resort for Render/Postgres issues)
+        try {
+            db.Database.ExecuteSqlRaw(@"
+                CREATE TABLE IF NOT EXISTS ""quantity_measurements"" (
+                    ""Id"" bigserial PRIMARY KEY,
+                    ""OperationType"" varchar(50) NOT NULL,
+                    ""MeasurementType"" varchar(50) NOT NULL DEFAULT 'Unknown',
+                    ""Operand1"" varchar(200),
+                    ""Operand2"" varchar(200),
+                    ""Result"" varchar(200),
+                    ""HasError"" boolean NOT NULL DEFAULT false,
+                    ""ErrorMessage"" varchar(500),
+                    ""CreatedAt"" timestamptz NOT NULL DEFAULT now()
+                );
+                CREATE TABLE IF NOT EXISTS ""users"" (
+                    ""Id"" bigserial PRIMARY KEY,
+                    ""Username"" varchar(100) NOT NULL,
+                    ""PasswordHash"" varchar(255) NOT NULL,
+                    ""Salt"" varchar(255) NOT NULL,
+                    ""Role"" varchar(50) NOT NULL,
+                    ""CreatedAt"" timestamptz NOT NULL DEFAULT now()
+                );
+            ");
+            
+            // Verify table existence by doing a simple count
+            try {
+                var count = db.Database.ExecuteSqlRaw("SELECT count(*) FROM \"quantity_measurements\"");
+                Console.WriteLine($"[Database] Verified: 'quantity_measurements' table exists and is accessible.");
+            } catch (Exception exCount) {
+                Console.WriteLine($"[Database] CRITICAL: Table creation seemed to succeed but verification failed: {exCount.Message}");
+            }
+
+            Console.WriteLine("[Database] Schema check complete (Tables verified/created).");
+        } catch (Exception ex) {
+            Console.WriteLine($"[Database] Warning: Table verification failed: {ex.Message}");
+        }
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"[Database] ERROR: {ex.Message}");
+        Console.WriteLine($"[Database] CRITICAL ERROR during initialization: {ex.Message}");
         if (ex.InnerException != null)
-            Console.WriteLine($"[Database] Inner: {ex.InnerException.Message}");
+            Console.WriteLine($"[Database] Inner Exception: {ex.InnerException.Message}");
     }
 }
 
-// 7. Global error handler
+// 8. Global error handler
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -160,16 +200,45 @@ app.UseExceptionHandler(errorApp =>
     });
 });
 
-// 8. Swagger
+// 9. Swagger
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+});
+
 // ✅ CORRECT middleware order:
-// CORS must come BEFORE Authentication and Authorization
 app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// 10. Endpoints
+app.MapHealthChecks("/health").AllowAnonymous();
+app.MapGet("/ping", () => Results.Ok(new { status = "Healthy", time = DateTime.UtcNow })).AllowAnonymous();
+
+app.MapGet("/debug/tables", async (QuantityMeasurementDbContext db) => {
+    try {
+        var tables = new List<string>();
+        using (var command = db.Database.GetDbConnection().CreateCommand())
+        {
+            command.CommandText = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'";
+            await db.Database.OpenConnectionAsync();
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    tables.Add(reader.GetString(0));
+                }
+            }
+        }
+        return Results.Ok(new { tables, connection = db.Database.GetDbConnection().Database });
+    } catch (Exception ex) {
+        return Results.Problem(ex.Message);
+    }
+}).AllowAnonymous();
 
 app.MapControllers();
 
