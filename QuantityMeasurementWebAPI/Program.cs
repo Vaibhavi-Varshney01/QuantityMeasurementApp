@@ -18,15 +18,14 @@ builder.Services.AddScoped<IQuantityMeasurementRepository, QuantityMeasurementEF
 builder.Services.AddScoped<IAuthService, AuthServiceImpl>();
 builder.Services.AddScoped<JwtHelper>();
 
-// 2. Database Configuration (Switch to PostgreSQL)
-// Priority: Environment Variables (Render/Docker) > Config File (Local)
+// 2. Database Configuration
 var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
     ?? Environment.GetEnvironmentVariable("DATABASE_PRIVATE_URL")
     ?? Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
     ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Handle Render's postgres:// or postgresql:// format if detected
-if (!string.IsNullOrWhiteSpace(connectionString) && (connectionString.StartsWith("postgres://") || connectionString.StartsWith("postgresql://")))
+if (!string.IsNullOrWhiteSpace(connectionString) &&
+    (connectionString.StartsWith("postgres://") || connectionString.StartsWith("postgresql://")))
 {
     try
     {
@@ -37,7 +36,6 @@ if (!string.IsNullOrWhiteSpace(connectionString) && (connectionString.StartsWith
         var db = databaseUri.AbsolutePath.TrimStart('/');
         var user = userInfo[0];
         var pass = userInfo.Length > 1 ? userInfo[1] : "";
-
         connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={pass};SSL Mode=Require;Trust Server Certificate=true";
     }
     catch (Exception ex)
@@ -48,139 +46,127 @@ if (!string.IsNullOrWhiteSpace(connectionString) && (connectionString.StartsWith
 
 if (string.IsNullOrWhiteSpace(connectionString))
 {
-    Console.WriteLine("[Warning] No valid connection string found in Environment or Config. Falling back to localhost.");
+    Console.WriteLine("[Warning] No valid connection string found. Falling back to localhost.");
     connectionString = "Host=localhost;Database=QuantityMeasurementDB;Username=postgres;Password=password";
 }
 
 builder.Services.AddDbContext<QuantityMeasurementDbContext>(options =>
     options.UseNpgsql(connectionString, b => b.MigrationsAssembly("QuantityMeasurementRepository")));
 
-// 3. JWT Authentication Configuration (Dual Scheme: Custom + Clerk)
-var jwtKey = builder.Configuration["Jwt:Key"] ?? Environment.GetEnvironmentVariable("Jwt__Key");
-var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "QuantityMeasurementApp";
+// 3. JWT Authentication (Dual Scheme: Custom JWT + Clerk)
+var jwtKey = builder.Configuration["Jwt:Key"]
+    ?? Environment.GetEnvironmentVariable("Jwt__Key")
+    ?? "ThisIsASecretKeyForQuantityMeasurementApp2026!";
+
+var jwtIssuer   = builder.Configuration["Jwt:Issuer"]   ?? "QuantityMeasurementApp";
 var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "QuantityMeasurementApp";
-
 var clerkAuthority = builder.Configuration["Clerk:Authority"] ?? "https://real-weasel-59.clerk.accounts.dev";
-
-if (string.IsNullOrEmpty(jwtKey))
-{
-    jwtKey = "ThisIsASecretKeyForQuantityMeasurementApp2026!";
-}
 
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme    = JwtBearerDefaults.AuthenticationScheme;
 })
-.AddJwtBearer(options => // Scheme 1: Custom JWT (Default)
+.AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
+        ValidateIssuer           = true,
+        ValidateAudience         = true,
+        ValidateLifetime         = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtIssuer,
-        ValidAudience = jwtAudience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        ValidIssuer              = jwtIssuer,
+        ValidAudience            = jwtAudience,
+        IssuerSigningKey         = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
 })
-.AddJwtBearer("Clerk", options => // Scheme 2: Clerk
+.AddJwtBearer("Clerk", options =>
 {
     options.Authority = clerkAuthority;
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = false, // Clerk tokens usually don't have audience unless configured
+        ValidateIssuer   = true,
+        ValidateAudience = false,
         ValidateLifetime = true
     };
 });
 
 builder.Services.AddAuthorization(options =>
 {
-    // A combined policy that accepts either Custom JWT or Clerk tokens
     var combinedPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder(
-        JwtBearerDefaults.AuthenticationScheme,
-        "Clerk")
+            JwtBearerDefaults.AuthenticationScheme, "Clerk")
         .RequireAuthenticatedUser()
         .Build();
-    
     options.DefaultPolicy = combinedPolicy;
 });
 
-// 4. CORS Configuration
-var frontendUrl = builder.Configuration["FrontendUrl"] ?? "http://localhost:3000";
-
+// 4. CORS — single policy, all frontend origins
+// ✅ Only ONE AddCors call — fixes the duplicate conflict
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("ProductionPolicy", policy =>
+    options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins(frontendUrl)
+        policy.WithOrigins(
+                "http://localhost:5173",
+                "http://localhost:5174",
+                "http://localhost:3000"
+              )
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
     });
 });
 
-// Controllers & Swagger
+// 5. Controllers & Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// 4.5. Automatic Database Migration & Schema Creation
+// 6. Auto-migrate database
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<QuantityMeasurementDbContext>();
     try
     {
-        Console.WriteLine("[Database] Starting schema Initialization...");
-        
-        // Try migrations first (standard way)
-        var pendingMigrations = db.Database.GetPendingMigrations().ToList();
-        if (pendingMigrations.Any())
+        Console.WriteLine("[Database] Starting schema initialization...");
+        var pending = db.Database.GetPendingMigrations().ToList();
+        if (pending.Any())
         {
-            Console.WriteLine($"[Database] Applying {pendingMigrations.Count} pending migrations...");
+            Console.WriteLine($"[Database] Applying {pending.Count} pending migrations...");
             db.Database.Migrate();
         }
-        
-        // Final safety check: This creates tables if they don't exist, 
-        // even if migrations are acting up.
-        Console.WriteLine("[Database] Ensuring tables exist (Force-Check)...");
         db.Database.EnsureCreated();
-        
-        Console.WriteLine("[Database] Schema is Ready.");
+        Console.WriteLine("[Database] Schema is ready.");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"[Database] ERROR during initialization: {ex.Message}");
-        if (ex.InnerException != null) 
+        Console.WriteLine($"[Database] ERROR: {ex.Message}");
+        if (ex.InnerException != null)
             Console.WriteLine($"[Database] Inner: {ex.InnerException.Message}");
     }
 }
 
-// 5. Global Error Handler
+// 7. Global error handler
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
     {
         var exception = context.Features.Get<IExceptionHandlerPathFeature>()?.Error;
-        context.Response.ContentType = "application/json";
-        context.Response.StatusCode = 500;
-
-        await context.Response.WriteAsJsonAsync(new
-        {
-            message = exception?.Message
-        });
+        context.Response.ContentType  = "application/json";
+        context.Response.StatusCode   = 500;
+        await context.Response.WriteAsJsonAsync(new { message = exception?.Message });
     });
 });
 
-// Swagger (Always enabled for development/debugging on Render)
+// 8. Swagger
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseCors("ProductionPolicy");
+// ✅ CORRECT middleware order:
+// CORS must come BEFORE Authentication and Authorization
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();

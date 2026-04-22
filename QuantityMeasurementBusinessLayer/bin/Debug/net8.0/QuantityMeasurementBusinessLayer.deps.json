@@ -377,7 +377,10 @@
       },
       "QuantityMeasurementModel/1.0.0": {
         "runtime": {
-          "QuantityMeasurementModel.dll": {}
+          "QuantityMeasurementModel.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "QuantityMeasurementRepository/1.0.0": {
@@ -394,7 +397,10 @@
           "QuantityMeasurementModel": "1.0.0"
         },
         "runtime": {
-          "QuantityMeasurementRepository.dll": {}
+          "QuantityMeasurementRepository.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

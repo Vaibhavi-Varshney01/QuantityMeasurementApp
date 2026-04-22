@@ -772,12 +772,18 @@
           "System.IdentityModel.Tokens.Jwt": "8.16.0"
         },
         "runtime": {
-          "QuantityMeasurementBusinessLayer.dll": {}
+          "QuantityMeasurementBusinessLayer.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "QuantityMeasurementModel/1.0.0": {
         "runtime": {
-          "QuantityMeasurementModel.dll": {}
+          "QuantityMeasurementModel.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "QuantityMeasurementRepository/1.0.0": {
@@ -794,7 +800,10 @@
           "QuantityMeasurementModel": "1.0.0"
         },
         "runtime": {
-          "QuantityMeasurementRepository.dll": {}
+          "QuantityMeasurementRepository.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }
